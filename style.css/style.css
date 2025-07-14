@@ -1,0 +1,99 @@
+body {
+  margin: 0;
+  font-family: 'Press Start 2P', cursive, sans-serif;
+  background: url('assets/neon-city-bg.jpg') no-repeat center center fixed;
+  background-size: cover;
+  color: #00ffff;
+  text-align: center;
+  padding: 2rem;
+}
+
+.container {
+  background-color: rgba(0, 0, 0, 0.75);
+  padding: 2rem;
+  border-radius: 20px;
+  max-width: 800px;
+  margin: 2rem auto;
+  box-shadow: 0 0 20px #00ffff;
+}
+
+.logo {
+  max-width: 180px;
+  margin-bottom: 1rem;
+}
+
+h1 {
+  font-size: 2rem;
+  text-shadow: 0 0 10px #ff00ff;
+}
+
+.tagline {
+  font-size: 1rem;
+  color: #ffffff;
+  margin-bottom: 2rem;
+}
+
+.game-list {
+  list-style: none;
+  padding: 0;
+  margin-bottom: 2rem;
+}
+
+.game-list li {
+  margin: 1rem 0;
+}
+
+.game-list a {
+  color: #00ffff;
+  text-decoration: none;
+  font-size: 1.2rem;
+  border: 2px solid #00ffff;
+  padding: 0.5rem 1rem;
+  border-radius: 10px;
+  display: inline-block;
+  transition: all 0.3s ease-in-out;
+}
+
+.game-list a:hover {
+  background-color: #00ffff;
+  color: #000;
+  box-shadow: 0 0 10px #00ffff;
+}
+
+.support p {
+  color: #fff;
+  margin-bottom: 0.5rem;
+}
+
+.button {
+  display: inline-block;
+  margin: 0.5rem;
+  padding: 0.5rem 1rem;
+  color: #000;
+  background-color: #00ffff;
+  text-decoration: none;
+  border-radius: 8px;
+  font-weight: bold;
+  transition: background 0.3s ease;
+}
+
+.button:hover {
+  background-color: #ff00ff;
+  color: #fff;
+  box-shadow: 0 0 8px #ff00ff;
+}
+
+@media screen and (max-width: 768px) {
+  body {
+    padding: 1rem;
+  }
+  .container {
+    padding: 1rem;
+  }
+  h1 {
+    font-size: 1.5rem;
+  }
+  .game-list a {
+    font-size: 1rem;
+  }
+}

@@ -1,0 +1,118 @@
+body {
+  margin: 0;
+  padding: 0;
+  font-family: sans-serif;
+  background: url('bg.jpg') no-repeat center center fixed;
+  background-size: cover;
+  color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+#logo-left {
+  position: fixed;
+  top: 10px;
+  left: 10px;
+  height: 40px;
+  z-index: 998;
+}
+
+#logo-controller {
+  position: fixed;
+  top: 10px;
+  right: 10px;
+  height: 40px;
+  z-index: 998;
+}
+
+#support-button {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  background: #ff5f5f;
+  color: white;
+  padding: 12px 20px;
+  border-radius: 50px;
+  text-decoration: none;
+  font-weight: bold;
+  font-size: 16px;
+  box-shadow: 0 0 10px rgba(0,0,0,0.4);
+  z-index: 999;
+}
+
+#game-container {
+  max-width: 95vw;
+  margin: 60px auto;
+  padding: 20px;
+  background-color: rgba(0, 0, 0, 0.7);
+  border-radius: 20px;
+  box-shadow: 0 0 30px #000;
+  text-align: center;
+}
+
+#gameCanvas {
+  width: 100%;
+  max-width: 100%;
+  height: auto;
+  border: 4px solid #00ff00;
+  display: block;
+  margin: 0 auto 20px;
+  background-color: black;
+  box-shadow: 0 0 20px lime;
+}
+
+#score {
+  font-size: 24px;
+  margin-bottom: 10px;
+}
+
+#start-button {
+  padding: 14px 28px;
+  font-size: 1.2em;
+  font-weight: bold;
+  background-color: limegreen;
+  color: black;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+  margin-bottom: 20px;
+}
+
+#start-button:hover {
+  transform: scale(1.1);
+}
+
+/* 🎮 On-screen Directional Buttons (Always Visible) */
+#mobile-controls {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 15px;
+  gap: 8px;
+}
+
+#mobile-controls .row {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+}
+
+#mobile-controls button {
+  background-color: #222;
+  border: 2px solid limegreen;
+  color: white;
+  font-size: 24px;
+  padding: 15px 25px;
+  border-radius: 10px;
+  cursor: pointer;
+  box-shadow: 0 0 10px #0f0;
+  transition: background 0.2s ease;
+}
+
+#mobile-controls button:hover {
+  background-color: #0a0;
+}

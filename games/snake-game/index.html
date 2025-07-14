@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Snake Game 🐍</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: sans-serif;
+      background: url('bg.jpg') no-repeat center center fixed;
+      background-size: cover;
+      color: white;
+      text-align: center;
+    }
+
+    #game-container {
+      background-color: rgba(0, 0, 0, 0.75);
+      margin: 60px auto 100px auto;
+      padding: 30px;
+      border-radius: 20px;
+      width: 90vw;
+      max-width: 1000px;
+      box-shadow: 0 0 30px black;
+    }
+
+    canvas {
+      border: 3px solid lime;
+      background: black;
+      width: 100%;
+      max-width: 600px;
+      height: auto;
+      box-shadow: 0 0 15px lime;
+    }
+
+    #score {
+      font-size: 24px;
+      margin-top: 10px;
+    }
+
+    #start-button {
+      margin-top: 15px;
+      padding: 12px 24px;
+      font-size: 18px;
+      background-color: limegreen;
+      color: black;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    #arrow-controls {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin: 20px 0;
+    }
+
+    .arrow-row {
+      display: flex;
+      justify-content: center;
+      margin: 5px 0;
+    }
+
+    .arrow-btn {
+      font-size: 30px;
+      padding: 15px 25px;
+      margin: 0 10px;
+      background-color: rgba(255, 255, 255, 0.2);
+      color: white;
+      border: 2px solid limegreen;
+      border-radius: 10px;
+      box-shadow: 0 0 8px black;
+      cursor: pointer;
+      transition: transform 0.1s ease;
+    }
+
+    .arrow-btn:hover,
+    .arrow-btn:active {
+      background-color: rgba(0, 255, 0, 0.3);
+      transform: scale(1.1);
+    }
+
+    #support-button {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background: #ff5f5f;
+      color: white;
+      padding: 12px 20px;
+      border-radius: 50px;
+      text-decoration: none;
+      font-weight: bold;
+      font-size: 16px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.4);
+      z-index: 999;
+    }
+
+    /* Smaller canvas + button spacing on mobile */
+    @media (max-width: 600px) {
+      canvas {
+        max-width: 90vw;
+      }
+
+      #game-container {
+        padding: 20px;
+        margin-bottom: 140px; /* more space above support button */
+      }
+
+      .arrow-btn {
+        font-size: 24px;
+        padding: 12px 20px;
+        margin: 0 8px;
+      }
+
+      #start-button {
+        margin-top: 10px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div id="game-container">
+    <h1>Snake Game 🐍</h1>
+    <canvas id="gameCanvas" width="600" height="600"></canvas>
+    <div id="score">Score: 0</div>
+
+    <!-- 🔼 On-screen arrow buttons (now above Start button) -->
+    <div id="arrow-controls">
+      <div class="arrow-row">
+        <button class="arrow-btn" onclick="changeDirection('up')">⬆️</button>
+      </div>
+      <div class="arrow-row">
+        <button class="arrow-btn" onclick="changeDirection('left')">⬅️</button>
+        <button class="arrow-btn" onclick="changeDirection('down')">⬇️</button>
+        <button class="arrow-btn" onclick="changeDirection('right')">➡️</button>
+      </div>
+    </div>
+
+    <button id="start-button" onclick="startGame()">Start Game</button>
+  </div>
+
+  <a href="https://ko-fi.com/theewhiterabbit" target="_blank" id="support-button">❤️ Support Me</a>
+
+  <script>
+    const canvas = document.getElementById("gameCanvas");
+    const ctx = canvas.getContext("2d");
+    const box = 20;
+    let snake = [{ x: 9 * box, y: 10 * box }];
+    let direction = null;
+    let food = {
+      x: Math.floor(Math.random() * 28 + 1) * box,
+      y: Math.floor(Math.random() * 28 + 1) * box
+    };
+    let score = 0;
+    let game;
+
+    function draw() {
+      ctx.fillStyle = "black";
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      for (let i = 0; i < snake.length; i++) {
+        ctx.fillStyle = i === 0 ? "lime" : "white";
+        ctx.fillRect(snake[i].x, snake[i].y, box, box);
+      }
+
+      ctx.fillStyle = "red";
+      ctx.fillRect(food.x, food.y, box, box);
+
+      let headX = snake[0].x;
+      let headY = snake[0].y;
+
+      if (direction === "left") headX -= box;
+      if (direction === "right") headX += box;
+      if (direction === "up") headY -= box;
+      if (direction === "down") headY += box;
+
+      if (headX === food.x && headY === food.y) {
+        score++;
+        document.getElementById("score").innerText = `Score: ${score}`;
+        food = {
+          x: Math.floor(Math.random() * 28 + 1) * box,
+          y: Math.floor(Math.random() * 28 + 1) * box
+        };
+      } else {
+        snake.pop();
+      }
+
+      let newHead = { x: headX, y: headY };
+
+      if (
+        headX < 0 || headX >= canvas.width ||
+        headY < 0 || headY >= canvas.height ||
+        snake.some(segment => segment.x === newHead.x && segment.y === newHead.y)
+      ) {
+        clearInterval(game);
+        alert("Game Over!");
+        return;
+      }
+
+      snake.unshift(newHead);
+    }
+
+    function startGame() {
+      clearInterval(game);
+      snake = [{ x: 9 * box, y: 10 * box }];
+      direction = "right";
+      score = 0;
+      document.getElementById("score").innerText = "Score: 0";
+      game = setInterval(draw, 100);
+    }
+
+    function changeDirection(dir) {
+      if (dir === "left" && direction !== "right") direction = "left";
+      if (dir === "right" && direction !== "left") direction = "right";
+      if (dir === "up" && direction !== "down") direction = "up";
+      if (dir === "down" && direction !== "up") direction = "down";
+    }
+
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "ArrowLeft") changeDirection("left");
+      if (e.key === "ArrowUp") changeDirection("up");
+      if (e.key === "ArrowRight") changeDirection("right");
+      if (e.key === "ArrowDown") changeDirection("down");
+    });
+  </script>
+</body>
+</html>

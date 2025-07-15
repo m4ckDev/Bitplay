@@ -1,56 +1,67 @@
-🕹️ BitPlay
-BitPlay is a free, browser-based retro arcade packed with classic-inspired games — built with HTML, CSS, and JavaScript. No installs, no ads, just pure nostalgic fun.
+# 🕹️ BitPlay
 
-🚀 Play Now
-Click a game to start playing instantly:
+**BitPlay** is a free, browser-based retro arcade packed with classic-inspired games — built with **HTML, CSS, and JavaScript**.  
+🎯 No installs, no ads, just pure nostalgic fun.
 
-🎯 Snake Game
+---
 
-🟡 Pac-Man Clone
+## 🎮 Play Now  
+Click a game below to jump in instantly:
 
-🍄 Mario Clone
+- 🐍 [Snake Game](games/snake-game/index.html)  
+- 🟡 [Pac-Man Clone](games/pacman/index.html)  
+- 🔴 [Mario Clone](games/mario-clone/index.html)  
+- 🟣 [Donkey Kong Clone](games/donkey-kong-clone/index.html)
 
-🐵 Donkey Kong Clone
+---
 
-💡 About This Project
-This project was built to bring back the old-school joy of arcade gaming using:
+## 💡 About This Project
 
-HTML5
+This project was built to bring back the **old-school joy of arcade gaming**, using:
 
-CSS3
+- HTML5  
+- CSS3  
+- Vanilla JavaScript  
+- ✅ Fully responsive layout (mobile + desktop)  
 
-Vanilla JavaScript
+> All games are organized in the `/games` folder for easy access and expansion.
 
-Fully responsive layout (mobile + desktop)
+---
 
-All games are organized in the /games folder for easy access and expansion.
+## ☕ Support BitPlay
 
-☕ Support BitPlay
-If you're enjoying the arcade, consider supporting it:
+If you're enjoying the arcade, consider supporting the project:
 
-Buy me a Ko-fi ☕
+- [Buy me a Ko-fi 🧃](https://ko-fi.com/yourkofilink)  
+- [Donate via PayPal 🐸](https://paypal.me/yourpaypallink)
 
-Donate via PayPal 💸
+> Your support helps keep these games free and fun for everyone.
 
-Your support helps keep these games free and fun for everyone.
+---
 
-📁 Folder Structure
-bash
-Copy
-Edit
+## 📁 Folder Structure
 /games
-  /snake-game
-  /pacman
-  /mario-clone
-  /donkey-kong-clone
+/snake-game
+/pacman
+/mario-clone
+/donkey-kong-clone
 /assets
-  logo.png
+logo.png
 index.html
 style.css
-🔗 Live Website
-✅ Hosted via GitHub Pages:
-https://mackinnon1990.github.io/bitplay
 
-📬 Contact / Feedback
-Got a suggestion or found a bug?
-Open an issue or message me directly — I’d love to hear from you.
+
+---
+
+## 🌐 Live Website
+
+🔗 [mackinnon1990.github.io/bitplay](https://mackinnon1990.github.io/bitplay)  
+Hosted via **GitHub Pages** ✅
+
+---
+
+## 📬 Contact / Feedback
+
+Have a suggestion or found a bug?  
+Open an issue or message me directly — I’d love to hear from you!
+

@@ -9,8 +9,8 @@
 Click a game below to jump in instantly:
 
 - 🐍 [Snake Game](games/snake-game/index.html)  
-- 🟡 [Pac-Man Clone](games/pacman/index.html)  
-- 🔴 [Mario Clone](games/mario-clone/index.html)  
+- 🟡 [Pac-Man Clone](games/Pac-Man/index.html)  
+- 🔴 [Mario Clone](games/Mario/index.html)  
 - 🟣 [Donkey Kong Clone](games/donkey-kong-clone/index.html)
 
 ---

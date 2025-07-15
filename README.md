@@ -1,38 +1,56 @@
-# 🎮 BitPlay
+🕹️ BitPlay
+BitPlay is a free, browser-based retro arcade packed with classic-inspired games — built with HTML, CSS, and JavaScript. No installs, no ads, just pure nostalgic fun.
 
-Welcome to **BitPlay** — a free, browser-based arcade filled with classic-inspired games like Snake, Pac-Man, Mario, and Donkey Kong clones. All built with love using HTML, CSS, and JavaScript.
+🚀 Play Now
+Click a game to start playing instantly:
 
----
+🎯 Snake Game
 
-## 🕹️ Play Now
+🟡 Pac-Man Clone
 
-Head over to the [live site](https://your-github-pages-link-here) and start playing instantly — no installs needed!
+🍄 Mario Clone
 
-- 🐍 [Snake Game](games/snake-game/index.html)
-- 👻 [Pac-Man Clone](games/pacman/index.html)
-- 🍄 [Mario Clone](games/mario-clone/index.html)
-- 🦍 [Donkey Kong Clone](games/donkey-kong-clone/index.html)
+🐵 Donkey Kong Clone
 
----
+💡 About This Project
+This project was built to bring back the old-school joy of arcade gaming using:
 
-## 💡 About This Project
+HTML5
 
-BitPlay is a passion project to bring back the retro joy of arcade gaming. Everything is built using:
-- HTML5
-- CSS3
-- Vanilla JavaScript
-- Responsive design (mobile + desktop)
+CSS3
 
----
+Vanilla JavaScript
 
-## 🤝 Support the Project
+Fully responsive layout (mobile + desktop)
 
-BitPlay is free and open for everyone! If you'd like to support development:
+All games are organized in the /games folder for easy access and expansion.
 
-- ☕ [Ko-fi](https://ko-fi.com/yourusername)
-- 💸 [PayPal](https://paypal.me/yourusername)
+☕ Support BitPlay
+If you're enjoying the arcade, consider supporting it:
 
----
+Buy me a Ko-fi ☕
 
-## 📂 Structure
+Donate via PayPal 💸
 
+Your support helps keep these games free and fun for everyone.
+
+📁 Folder Structure
+bash
+Copy
+Edit
+/games
+  /snake-game
+  /pacman
+  /mario-clone
+  /donkey-kong-clone
+/assets
+  logo.png
+index.html
+style.css
+🔗 Live Website
+✅ Hosted via GitHub Pages:
+https://mackinnon1990.github.io/bitplay
+
+📬 Contact / Feedback
+Got a suggestion or found a bug?
+Open an issue or message me directly — I’d love to hear from you.

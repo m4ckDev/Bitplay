@@ -9,23 +9,7 @@ const maze = [
   [1,0,1,1,1,1,0,1,1,1,1,1,0,1,1,0,1,1,1,1,0,1,1,1,1,1,0,1],
   [1,0,1,1,1,1,0,1,1,1,1,1,0,1,1,0,1,1,1,1,0,1,1,1,1,1,0,1],
   [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-  [1,0,1,1,1,1,0,1,0,1,1,1,1,1,1,1,1,1,0,1,0,1,1,1,1,1,0,1],
-  [1,0,0,0,0,1,0,0,0,1,0,0,0,1,1,0,0,0,0,1,0,1,0,0,0,0,0,1],
-  [1,1,1,1,0,1,1,1,0,1,0,1,0,1,1,0,1,0,1,1,0,1,0,1,1,1,1,1],
-  [0,0,0,1,0,0,0,0,0,1,0,1,0,0,0,0,1,0,1,0,0,1,0,0,0,1,0,0],
-  [1,1,1,1,0,1,1,1,1,1,0,1,1,1,1,1,1,0,1,1,1,1,0,1,1,1,1,1],
-  [1,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,1],
-  [1,0,1,1,1,1,0,1,1,1,1,1,1,1,1,1,1,1,1,1,0,1,1,1,1,1,0,1],
-  [1,0,0,0,0,0,0,1,0,0,0,0,1,1,0,0,0,0,0,1,0,0,0,0,0,0,0,1],
-  [1,1,1,1,1,1,0,1,0,1,1,0,1,1,0,1,1,0,1,1,0,1,1,1,1,1,1,1],
-  [0,0,0,0,0,1,0,0,0,1,0,0,0,1,0,0,0,0,0,1,0,1,0,0,0,0,0,0],
-  [1,1,1,1,0,1,1,1,0,1,0,1,1,1,1,1,1,0,1,1,0,1,0,1,1,1,1,1],
-  [1,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,1],
-  [1,0,1,1,1,1,0,1,1,1,1,1,1,1,1,1,1,1,1,1,0,1,1,1,1,1,0,1],
-  [1,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,1],
-  [1,1,1,1,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
-  [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-  [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
+  [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]
 ];
 
 const rows = maze.length;
@@ -38,7 +22,7 @@ let score = 0;
 let gameRunning = false;
 
 let frameCount = 0;
-const moveInterval = 18; // slow down movement to match classic
+const moveInterval = 30;
 
 const player = {
   x: 1,
@@ -48,11 +32,12 @@ const player = {
   color: 'yellow'
 };
 
-const ghost = {
-  x: 26,
-  y: 17,
-  color: 'red'
-};
+const ghosts = [
+  { x: 26, y: 1, color: 'red', name: 'Blinky' },
+  { x: 26, y: 3, color: 'pink', name: 'Pinky' },
+  { x: 1,  y: 3, color: 'cyan', name: 'Inky' },
+  { x: 13, y: 1, color: 'orange', name: 'Clyde' }
+];
 
 function drawMaze() {
   for (let y = 0; y < rows; y++) {
@@ -77,11 +62,13 @@ function drawPlayer() {
   ctx.fill();
 }
 
-function drawGhost() {
-  ctx.beginPath();
-  ctx.arc(ghost.x * tileSize + tileSize / 2, ghost.y * tileSize + tileSize / 2, tileSize / 2 - 2, 0, Math.PI * 2);
-  ctx.fillStyle = ghost.color;
-  ctx.fill();
+function drawGhosts() {
+  ghosts.forEach(ghost => {
+    ctx.beginPath();
+    ctx.arc(ghost.x * tileSize + tileSize / 2, ghost.y * tileSize + tileSize / 2, tileSize / 2 - 2, 0, Math.PI * 2);
+    ctx.fillStyle = ghost.color;
+    ctx.fill();
+  });
 }
 
 function drawScore() {
@@ -91,47 +78,41 @@ function drawScore() {
 
 function update() {
   frameCount++;
-
   if (frameCount % moveInterval !== 0) return;
 
-  // Pac-Man movement
   const nextX = player.x + player.dirX;
   const nextY = player.y + player.dirY;
-
   if (maze[nextY][nextX] !== 1) {
     player.x = nextX;
     player.y = nextY;
-
     if (maze[player.y][player.x] === 0) {
-      maze[player.y][player.x] = 2; // dot eaten
+      maze[player.y][player.x] = 2;
       score += 10;
     }
   }
 
-  // Ghost movement (random)
-  const directions = [
-    { x: 0, y: -1 }, { x: 0, y: 1 },
-    { x: -1, y: 0 }, { x: 1, y: 0 }
-  ];
+  // Random movement for ghosts
+  ghosts.forEach(ghost => {
+    const dirs = [
+      { x: 0, y: -1 },
+      { x: 0, y: 1 },
+      { x: -1, y: 0 },
+      { x: 1, y: 0 }
+    ];
+    const valid = dirs.filter(d => maze[ghost.y + d.y] && maze[ghost.y + d.y][ghost.x + d.x] !== 1);
+    if (valid.length > 0) {
+      const rand = Math.floor(Math.random() * valid.length);
+      ghost.x += valid[rand].x;
+      ghost.y += valid[rand].y;
+    }
 
-  const validDirs = directions.filter(dir => {
-    const newX = ghost.x + dir.x;
-    const newY = ghost.y + dir.y;
-    return maze[newY][newX] !== 1;
+    // Collision check
+    if (ghost.x === player.x && ghost.y === player.y) {
+      gameRunning = false;
+      document.getElementById("popup").classList.remove("hidden");
+      document.getElementById("popup-message").textContent = `Caught by ${ghost.name}!`;
+    }
   });
-
-  if (validDirs.length > 0) {
-    const rand = Math.floor(Math.random() * validDirs.length);
-    ghost.x += validDirs[rand].x;
-    ghost.y += validDirs[rand].y;
-  }
-
-  // Game Over check
-  if (ghost.x === player.x && ghost.y === player.y) {
-    gameRunning = false;
-    document.getElementById("popup").classList.remove("hidden");
-    document.getElementById("popup-message").textContent = "Game Over!";
-  }
 }
 
 function draw() {
@@ -139,7 +120,7 @@ function draw() {
   ctx.fillRect(0, 0, canvas.width, canvas.height);
   drawMaze();
   drawPlayer();
-  drawGhost();
+  drawGhosts();
   drawScore();
 }
 
@@ -158,8 +139,10 @@ function startGame() {
   player.y = 1;
   player.dirX = 0;
   player.dirY = 0;
-  ghost.x = 26;
-  ghost.y = 17;
+  ghosts[0].x = 26; ghosts[0].y = 1;
+  ghosts[1].x = 26; ghosts[1].y = 3;
+  ghosts[2].x = 1;  ghosts[2].y = 3;
+  ghosts[3].x = 13; ghosts[3].y = 1;
   document.getElementById("popup").classList.add("hidden");
   gameLoop();
 }
@@ -176,5 +159,4 @@ document.addEventListener("keydown", (e) => {
   }
 });
 
-// Draw the initial maze before game starts
 draw();

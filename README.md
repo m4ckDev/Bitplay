@@ -22,7 +22,7 @@ This project was built to bring back the **old-school joy of arcade gaming**, us
 - HTML5  
 - CSS3  
 - Vanilla JavaScript  
-- ✅ Fully responsive layout (mobile + desktop)  
+- ✅ Fully responsive layout (desktop) !Working on the Mobile option!
 
 > All games are organized in the `/games` folder for easy access and expansion.
 
@@ -41,10 +41,10 @@ If you're enjoying the arcade, consider supporting the project:
 
 ## 📁 Folder Structure
 /games
-/snake-game
+/snake
 /pacman
-/mario-clone
-/donkey-kong-clone
+/Mario
+/DonkeyKong
 /assets
 logo.png
 index.html

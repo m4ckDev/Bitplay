@@ -36,20 +36,20 @@ const maze = [
   [0,0,0,0,0,0,0,0,1,2,2,2,2,2,2,2,1,2,1,0,0,0,0,0,0,0,0,0],
   [1,1,1,1,1,1,1,0,1,1,1,1,1,1,1,1,1,2,1,1,1,1,1,1,1,1,1,1],
   [1,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,1],
-  [1,2,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
+  [1,2,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,2,1],
+  [1,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,1],
+  [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]
 ];
 
-// Pacman state
 let pacman = {
   x: 14 * tileSize,
   y: 23 * tileSize,
   dirX: 0,
   dirY: 0,
   speed: 2,
-  radius: tileSize / 2
+  radius: tileSize / 2,
 };
 
-// Ghost class
 class Ghost {
   constructor(x, y, color) {
     this.x = x;
@@ -63,19 +63,19 @@ class Ghost {
     ctx.fillStyle = this.color;
     ctx.beginPath();
     ctx.arc(this.x + pacman.radius, this.y + pacman.radius, pacman.radius, Math.PI, 0);
-    ctx.lineTo(this.x + tileSize * 1, this.y + tileSize);
+    ctx.lineTo(this.x + tileSize, this.y + tileSize);
     ctx.lineTo(this.x, this.y + tileSize);
     ctx.closePath();
     ctx.fill();
   }
   move() {
-    // Simple AI: move randomly for now
+    // Simple random movement AI
     if (Math.random() < 0.02) {
       const directions = [
-        {x: 1, y: 0},
-        {x: -1, y: 0},
-        {x: 0, y: 1},
-        {x: 0, y: -1}
+        { x: 1, y: 0 },
+        { x: -1, y: 0 },
+        { x: 0, y: 1 },
+        { x: 0, y: -1 },
       ];
       let dir = directions[Math.floor(Math.random() * directions.length)];
       if (!isWall(this.x + dir.x * tileSize, this.y + dir.y * tileSize)) {
@@ -96,13 +96,14 @@ class Ghost {
 }
 
 let dots = [];
+let ghosts = [];
 
 function initDots() {
   dots = [];
   for (let r = 0; r < maze.length; r++) {
     for (let c = 0; c < maze[r].length; c++) {
       if (maze[r][c] === 2) {
-        dots.push({x: c * tileSize + tileSize / 2, y: r * tileSize + tileSize / 2, eaten: false});
+        dots.push({ x: c * tileSize + tileSize / 2, y: r * tileSize + tileSize / 2, eaten: false });
       }
     }
   }
@@ -121,7 +122,7 @@ function drawMaze() {
 
 function drawDots() {
   ctx.fillStyle = 'white';
-  dots.forEach(dot => {
+  dots.forEach((dot) => {
     if (!dot.eaten) {
       ctx.beginPath();
       ctx.arc(dot.x, dot.y, 4, 0, 2 * Math.PI);
@@ -150,21 +151,29 @@ function update() {
   let nextX = pacman.x + pacman.dirX * pacman.speed;
   let nextY = pacman.y + pacman.dirY * pacman.speed;
 
-  if (!isWall(nextX, pacman.y) && !isWall(nextX + tileSize - 1, pacman.y) &&
-      !isWall(nextX, pacman.y + tileSize - 1) && !isWall(nextX + tileSize - 1, pacman.y + tileSize - 1)) {
+  if (
+    !isWall(nextX, pacman.y) &&
+    !isWall(nextX + tileSize - 1, pacman.y) &&
+    !isWall(nextX, pacman.y + tileSize - 1) &&
+    !isWall(nextX + tileSize - 1, pacman.y + tileSize - 1)
+  ) {
     pacman.x = nextX;
   }
-  if (!isWall(pacman.x, nextY) && !isWall(pacman.x + tileSize - 1, nextY) &&
-      !isWall(pacman.x, nextY + tileSize - 1) && !isWall(pacman.x + tileSize - 1, nextY + tileSize - 1)) {
+  if (
+    !isWall(pacman.x, nextY) &&
+    !isWall(pacman.x + tileSize - 1, nextY) &&
+    !isWall(pacman.x, nextY + tileSize - 1) &&
+    !isWall(pacman.x + tileSize - 1, nextY + tileSize - 1)
+  ) {
     pacman.y = nextY;
   }
 
   // Eat dots
-  dots.forEach(dot => {
+  dots.forEach((dot) => {
     if (!dot.eaten) {
       let dx = dot.x - (pacman.x + pacman.radius);
       let dy = dot.y - (pacman.y + pacman.radius);
-      let dist = Math.sqrt(dx*dx + dy*dy);
+      let dist = Math.sqrt(dx * dx + dy * dy);
       if (dist < pacman.radius) {
         dot.eaten = true;
       }
@@ -172,21 +181,96 @@ function update() {
   });
 
   // Update ghosts
-  ghosts.forEach(ghost => {
+  ghosts.forEach((ghost) => {
     ghost.move();
   });
 
   // Check collisions with ghosts
-  ghosts.forEach(ghost => {
+  ghosts.forEach((ghost) => {
     let dx = ghost.x - pacman.x;
     let dy = ghost.y - pacman.y;
-    let dist = Math.sqrt(dx*dx + dy*dy);
+    let dist = Math.sqrt(dx * dx + dy * dy);
     if (dist < tileSize - 4) {
-      showPopup("👻 Boo! Pac-Man got spooked! Try again!");
+      showPopup('👻 Boo! Pac-Man got spooked! Try again!');
       stopGame();
     }
   });
 
   // Win condition
-  if (dots.every(dot => dot.eaten)) {
-    showPopup("🎉 You ate
+  if (dots.every((dot) => dot.eaten)) {
+    showPopup('🎉 You ate all the dots! Pac-Man’s on a snack spree! 🍕😄');
+    stopGame();
+  }
+}
+
+function draw() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  drawMaze();
+  drawDots();
+  drawPacman();
+  ghosts.forEach((ghost) => ghost.draw());
+}
+
+let gameInterval = null;
+function gameLoop() {
+  update();
+  draw();
+}
+
+function startGame() {
+  pacman.x = 14 * tileSize;
+  pacman.y = 23 * tileSize;
+  pacman.dirX = 0;
+  pacman.dirY = 0;
+  initDots();
+
+  ghosts = [
+    new Ghost(13 * tileSize, 11 * tileSize, 'red'),
+    new Ghost(14 * tileSize, 11 * tileSize, 'pink'),
+    new Ghost(15 * tileSize, 11 * tileSize, 'cyan'),
+    new Ghost(16 * tileSize, 11 * tileSize, 'orange'),
+  ];
+
+  popup.classList.add('hidden');
+
+  if (gameInterval) clearInterval(gameInterval);
+  gameInterval = setInterval(gameLoop, 1000 / 60);
+}
+
+function stopGame() {
+  if (gameInterval) clearInterval(gameInterval);
+  popup.classList.remove('hidden');
+}
+
+function showPopup(message) {
+  popupMessage.textContent = message;
+  popup.classList.remove('hidden');
+}
+
+popupRestart.addEventListener('click', () => {
+  startGame();
+});
+
+window.addEventListener('keydown', (e) => {
+  // WASD controls
+  switch (e.key.toLowerCase()) {
+    case 'w':
+      pacman.dirX = 0;
+      pacman.dirY = -1;
+      break;
+    case 'a':
+      pacman.dirX = -1;
+      pacman.dirY = 0;
+      break;
+    case 's':
+      pacman.dirX = 0;
+      pacman.dirY = 1;
+      break;
+    case 'd':
+      pacman.dirX = 1;
+      pacman.dirY = 0;
+      break;
+  }
+});
+
+startGame();

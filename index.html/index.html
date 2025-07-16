@@ -9,7 +9,7 @@
     body {
       margin: 0;
       background-color: #0e0e0e;
-      font-family: 'Press Start 2P', sans-serif;
+      font-family: 'Press Start 2P', monospace;
       color: #ffffff;
       display: flex;
       flex-direction: column;
@@ -18,37 +18,38 @@
       text-align: center;
     }
 
-    img.logo {
-      max-width: 180px;
-      margin-bottom: 20px;
+    .logo {
+      max-width: 160px;
+      margin-bottom: 25px;
     }
 
     h1 {
-      font-size: 1.5rem;
+      font-size: 1.4rem;
       color: #ffea00;
       text-shadow: 0 0 8px #ffea00;
+      margin-bottom: 10px;
     }
 
     p {
       color: #ccc;
-      font-size: 0.9rem;
-      margin-bottom: 20px;
+      font-size: 0.85rem;
+      margin-bottom: 30px;
     }
 
     .game-list {
       list-style: none;
       padding: 0;
-      margin-top: 20px;
     }
 
     .game-list li {
-      margin: 12px 0;
+      margin: 14px 0;
       font-size: 1rem;
     }
 
     .game-list a {
       text-decoration: none;
       color: #00ffff;
+      transition: color 0.3s ease;
     }
 
     .game-list a:hover {
@@ -57,12 +58,13 @@
 
     .donate {
       margin-top: 40px;
-      font-size: 0.85rem;
+      font-size: 0.8rem;
     }
 
     .donate a {
       color: #ff66cc;
-      margin: 0 10px;
+      margin: 0 12px;
+      text-decoration: none;
     }
 
     .donate a:hover {
@@ -71,7 +73,8 @@
   </style>
 </head>
 <body>
-  <img src="bitplay-logo.png" alt="BitPlay Logo" class="logo" />
+
+  <img src="assets/logo.png" alt="BitPlay Logo" class="logo" />
 
   <h1>Welcome to BitPlay</h1>
   <p>Classic games. No installs. Pure nostalgia.</p>
@@ -88,5 +91,6 @@
     <a href="https://ko-fi.com/theewhiterabbit" target="_blank">☕ Buy me a Ko-fi</a>
     <a href="https://paypal.me/GamerDad" target="_blank">💸 Donate via PayPal</a>
   </div>
+
 </body>
 </html>

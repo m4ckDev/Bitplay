@@ -37,26 +37,17 @@ const baseMaze = [
 const rows = maze.length;
 const cols = maze[0].length;
 
-let score = 0;
-let level = 1;
-let gameRunning = false;
-let frightened = false;
-let frightenedTimer = 0;
-
-const player = {
-  x: 1,
-  y: 1,
-  dirX: 0,
-  dirY: 0,
-  color: 'yellow'
-};
-
+const player = { x: 1, y: 1, dirX: 0, dirY: 0, color: 'yellow' };
 const ghosts = [
-  { x: 13, y: 2, color: 'red', dirX: 0, dirY: 0 },
-  { x: 14, y: 2, color: 'pink', dirX: 0, dirY: 0 },
-  { x: 13, y: 3, color: 'cyan', dirX: 0, dirY: 0 },
-  { x: 14, y: 3, color: 'orange', dirX: 0, dirY: 0 }
+  { x: 13, y: 2, color: 'red', dirX: 0, dirY: 0, penTime: 0 },
+  { x: 14, y: 2, color: 'pink', dirX: 0, dirY: 0, penTime: 60 },
+  { x: 13, y: 3, color: 'cyan', dirX: 0, dirY: 0, penTime: 120 },
+  { x: 14, y: 3, color: 'orange', dirX: 0, dirY: 0, penTime: 180 }
 ];
+
+function isWalkable(x, y) {
+  return maze[y] && maze[y][x] !== 1;
+}
 
 function drawMaze() {
   for (let y = 0; y < rows; y++) {
@@ -67,12 +58,12 @@ function drawMaze() {
       } else if (maze[y][x] === 0) {
         ctx.fillStyle = 'white';
         ctx.beginPath();
-        ctx.arc(x * tileSize + tileSize / 2, y * tileSize + tileSize / 2, pelletRadius, 0, 2 * Math.PI);
+        ctx.arc(x * tileSize + 10, y * tileSize + 10, pelletRadius, 0, Math.PI * 2);
         ctx.fill();
       } else if (maze[y][x] === 3) {
         ctx.fillStyle = 'white';
         ctx.beginPath();
-        ctx.arc(x * tileSize + tileSize / 2, y * tileSize + tileSize / 2, powerPelletRadius, 0, 2 * Math.PI);
+        ctx.arc(x * tileSize + 10, y * tileSize + 10, powerPelletRadius, 0, Math.PI * 2);
         ctx.fill();
       }
     }
@@ -81,114 +72,116 @@ function drawMaze() {
 
 function drawPlayer() {
   ctx.beginPath();
-  ctx.arc(player.x * tileSize + tileSize / 2, player.y * tileSize + tileSize / 2, tileSize / 2 - 2, 0, Math.PI * 2);
+  ctx.arc(player.x * tileSize + 10, player.y * tileSize + 10, tileSize / 2 - 2, 0, Math.PI * 2);
   ctx.fillStyle = player.color;
   ctx.fill();
 }
 
 function drawGhosts() {
   ghosts.forEach(g => {
+    if (g.penTime > 0) return;
     ctx.beginPath();
-    ctx.arc(g.x * tileSize + tileSize / 2, g.y * tileSize + tileSize / 2, tileSize / 2 - 2, 0, Math.PI * 2);
+    ctx.arc(g.x * tileSize + 10, g.y * tileSize + 10, tileSize / 2 - 2, 0, Math.PI * 2);
     ctx.fillStyle = frightened ? 'blue' : g.color;
     ctx.fill();
   });
 }
 
 function drawScore() {
-  const scoreEl = document.getElementById("scoreText");
-  if (scoreEl) scoreEl.textContent = `Score: ${score} | Level: ${level}`;
-}
-
-function isWalkable(x, y) {
-  return maze[y] && maze[y][x] !== 1;
+  const el = document.getElementById('scoreText');
+  if (el) el.textContent = `Score: ${score} | Level: ${level}`;
 }
 
 function movePlayer() {
-  const nextX = player.x + player.dirX;
-  const nextY = player.y + player.dirY;
-  if (isWalkable(nextX, nextY)) {
-    player.x = nextX;
-    player.y = nextY;
-    if (maze[player.y][player.x] === 0) {
-      maze[player.y][player.x] = 2;
+  const nx = player.x + player.dirX;
+  const ny = player.y + player.dirY;
+  if (isWalkable(nx, ny)) {
+    player.x = nx; player.y = ny;
+    if (maze[ny][nx] === 0) {
+      maze[ny][nx] = 2;
       score += 10;
-    } else if (maze[player.y][player.x] === 3) {
-      maze[player.y][player.x] = 2;
+    } else if (maze[ny][nx] === 3) {
+      maze[ny][nx] = 2;
       score += 50;
       frightened = true;
-      frightenedTimer = 500;
+      frightenedTimer = 400;
     }
   }
 }
 
 function moveGhosts() {
   ghosts.forEach(g => {
-    if (Math.random() < 0.3) {
-      const dirs = [
-        { dx: 0, dy: -1 },
-        { dx: 0, dy: 1 },
-        { dx: -1, dy: 0 },
-        { dx: 1, dy: 0 }
-      ];
-      let best = dirs[0];
-      let bestDist = Infinity;
-      dirs.forEach(d => {
-        const newX = g.x + d.dx;
-        const newY = g.y + d.dy;
-        if (isWalkable(newX, newY)) {
-          const dist = Math.hypot(player.x - newX, player.y - newY);
-          const chase = frightened ? -dist : dist;
-          if (chase < bestDist) {
-            bestDist = chase;
-            best = d;
-          }
-        }
-      });
-      g.dirX = best.dx;
-      g.dirY = best.dy;
-    }
-    const newX = g.x + g.dirX;
-    const newY = g.y + g.dirY;
-    if (isWalkable(newX, newY)) {
-      g.x = newX;
-      g.y = newY;
+    if (g.penTime > 0) {
+      g.penTime--;
+      return;
     }
 
-    // Collision with player
+    const options = [
+      { dx: 1, dy: 0 }, { dx: -1, dy: 0 },
+      { dx: 0, dy: 1 }, { dx: 0, dy: -1 }
+    ];
+    let best = options[0];
+    let bestDist = Infinity;
+
+    options.forEach(d => {
+      const tx = g.x + d.dx;
+      const ty = g.y + d.dy;
+      if (isWalkable(tx, ty)) {
+        const dist = Math.hypot(player.x - tx, player.y - ty);
+        const value = frightened ? -dist : dist;
+        if (value < bestDist) {
+          bestDist = value;
+          best = d;
+        }
+      }
+    });
+
+    g.x += best.dx;
+    g.y += best.dy;
+
     if (g.x === player.x && g.y === player.y) {
       if (frightened) {
-        g.x = 13;
-        g.y = 2;
+        g.x = 13; g.y = 2;
+        g.penTime = 60;
         score += 200;
       } else {
         gameRunning = false;
-        alert("Game Over! Score: " + score);
+        alert("Game Over!");
       }
     }
   });
 }
 
-function levelUpIfCleared() {
-  const dotsRemaining = maze.flat().filter(cell => cell === 0 || cell === 3).length;
-  if (dotsRemaining === 0) {
+function checkLevelClear() {
+  const remaining = maze.flat().filter(v => v === 0 || v === 3).length;
+  if (remaining === 0) {
     level++;
-    frightened = false;
     resetMaze();
   }
 }
 
 function resetMaze() {
-  for (let y = 0; y < rows; y++) {
-    for (let x = 0; x < cols; x++) {
-      if (maze[y][x] === 2) maze[y][x] = (x === 1 && y === 1) ? 2 : 0;
-    }
-  }
-  maze[1][1] = 2;
-  maze[1][26] = 3;
-  maze[1][1] = 3;
-  player.x = 1;
-  player.y = 1;
+  frightened = false;
+  frightenedTimer = 0;
+  maze.forEach((row, y) => {
+    maze[y] = row.map(cell => cell === 2 ? 0 : cell);
+  });
+  player.x = 1; player.y = 1;
+  ghosts.forEach((g, i) => {
+    g.x = 13 + (i % 2); g.y = 2 + Math.floor(i / 2);
+    g.penTime = i * 60;
+  });
+}
+
+function update() {
+  frameCount++;
+  if (frightenedTimer > 0) frightenedTimer--;
+  else frightened = false;
+
+  movePlayer();
+  if (frameCount % 4 === 0) moveGhosts();
+  checkLevelClear();
+  draw();
 }
 
 function draw() {
@@ -200,33 +193,22 @@ function draw() {
   drawScore();
 }
 
-function update() {
-  if (frightenedTimer > 0) frightenedTimer--;
-  else frightened = false;
-
-  movePlayer();
-  moveGhosts();
-  levelUpIfCleared();
-}
-
 function gameLoop() {
   if (!gameRunning) return;
   update();
-  draw();
-  setTimeout(() => requestAnimationFrame(gameLoop), 120); // slower speed
+  requestAnimationFrame(gameLoop);
 }
 
 function startGame() {
   gameRunning = true;
-  resetMaze();
   score = 0;
   level = 1;
+  resetMaze();
   gameLoop();
 }
 
-document.getElementById("startButton").addEventListener("click", startGame);
-
-document.addEventListener("keydown", (e) => {
+document.getElementById('startButton').addEventListener('click', startGame);
+document.addEventListener('keydown', e => {
   switch (e.key.toLowerCase()) {
     case 'w': player.dirX = 0; player.dirY = -1; break;
     case 's': player.dirX = 0; player.dirY = 1; break;
@@ -234,5 +216,3 @@ document.addEventListener("keydown", (e) => {
     case 'd': player.dirX = 1; player.dirY = 0; break;
   }
 });
-
-requestAnimationFrame(gameLoop);

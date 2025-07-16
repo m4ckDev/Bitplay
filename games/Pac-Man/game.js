@@ -112,6 +112,7 @@ function startGame() {
 }
 
 document.getElementById("startButton").addEventListener("click", startGame);
+const scoreEl = document.getElementById("scoreText");
 
 document.addEventListener("keydown", (e) => {
   switch (e.key.toLowerCase()) {

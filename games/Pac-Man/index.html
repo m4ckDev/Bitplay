@@ -7,14 +7,16 @@
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <button id="startButton">Start Game</button>
-  <canvas id="gameCanvas" width="560" height="620"></canvas>
+  <div class="game-container">
+    <button id="startButton">Start Game</button>
+    <canvas id="gameCanvas" width="560" height="620"></canvas>
 
-  <div id="popup" class="hidden">
-    <div id="popup-message"></div>
-    <button id="popup-restart">Play Again</button>
+    <div id="popup" class="hidden">
+      <div id="popup-message"></div>
+      <button id="popup-restart">Play Again</button>
   </div>
-
+</div>
+  
   <script src="game.js"></script>
 </body>
 </html>

@@ -6,12 +6,14 @@
 ---
 
 ## 🎮 Play Now  
+
 Click a game below to jump in instantly:
 
-- 🐍 [Snake](games/snake/index.html)  
-- 🟡 [Pac-Man](games/Pac-Man/index.html)  
-- 🔴 [Mario](games/Mario/index.html)  
-- 🟣 [Donkey Kong](games/DonkeyKong/index.html)
+- 🐍 [Snake](snake-game/)
+- 🟡 [Pac-Man](pacman-game/)
+- 🔴 [Mario](mario-game/)  
+- 🟣 [Donkey Kong](donkey-kong/)
+
 
 ---
 

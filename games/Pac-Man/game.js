@@ -273,4 +273,7 @@ window.addEventListener('keydown', (e) => {
   }
 });
 
-startGame();
+document.getElementById('startButton').addEventListener('click', () => {
+  startGame();
+  document.getElementById('startButton').style.display = 'none';  // Hide start button after game starts
+});

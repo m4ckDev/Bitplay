@@ -2,31 +2,91 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>BitPlay Arcade</title>
-  <link rel="stylesheet" href="style.css" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>🎮 BitPlay – Retro Arcade</title>
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+  <style>
+    body {
+      margin: 0;
+      background-color: #0e0e0e;
+      font-family: 'Press Start 2P', sans-serif;
+      color: #ffffff;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 40px 20px;
+      text-align: center;
+    }
+
+    img.logo {
+      max-width: 180px;
+      margin-bottom: 20px;
+    }
+
+    h1 {
+      font-size: 1.5rem;
+      color: #ffea00;
+      text-shadow: 0 0 8px #ffea00;
+    }
+
+    p {
+      color: #ccc;
+      font-size: 0.9rem;
+      margin-bottom: 20px;
+    }
+
+    .game-list {
+      list-style: none;
+      padding: 0;
+      margin-top: 20px;
+    }
+
+    .game-list li {
+      margin: 12px 0;
+      font-size: 1rem;
+    }
+
+    .game-list a {
+      text-decoration: none;
+      color: #00ffff;
+    }
+
+    .game-list a:hover {
+      color: #ffaa00;
+    }
+
+    .donate {
+      margin-top: 40px;
+      font-size: 0.85rem;
+    }
+
+    .donate a {
+      color: #ff66cc;
+      margin: 0 10px;
+    }
+
+    .donate a:hover {
+      color: #ffffff;
+    }
+  </style>
 </head>
 <body>
-  <div class="container">
-    <img src="assets/logo.png" alt="BitPlay Logo" class="logo" />
-    <h1>Welcome to BitPlay</h1>
-    <p class="tagline">Classic games. No installs. Pure nostalgia.</p>
+  <img src="bitplay-logo.png" alt="BitPlay Logo" class="logo" />
 
-    <ul class="game-list">
-      <li><a href="https://mackinnon1990.github.io/Bitplay/games/snake/index.html">🐍 Snake</a></li>
-      <li><a href="https://mackinnon1990.github.io/Bitplay/games/Pac-Man/index.html">🟡 Pac-Man</a></li>
-      <li><a href="https://mackinnon1990.github.io/Bitplay/games/Mario/index.html">🍄 Mario</a></li>
-      <li><a href="https://mackinnon1990.github.io/Bitplay/games/DonkeyKong/index.html">🦍 Donkey Kong</a></li>
-    </ul>
+  <h1>Welcome to BitPlay</h1>
+  <p>Classic games. No installs. Pure nostalgia.</p>
 
-    <div class="support">
-      <p>Support this project:</p>
-      <a href="https://ko-fi.com/yourkofilink" target="_blank" class="button">Buy me a Ko-fi ☕</a>
-      <a href="https://paypal.me/yourpaypallink" target="_blank" class="button">Donate via PayPal 🐸</a>
-    </div>
+  <ul class="game-list">
+    <li><a href="https://mackinnon1990.github.io/Bitplay/games/snake/index.html">🐍 Snake</a></li>
+    <li><a href="https://mackinnon1990.github.io/Bitplay/games/Pac-Man/index.html">🟡 Pac-Man</a></li>
+    <li><a href="https://mackinnon1990.github.io/Bitplay/games/Mario/index.html">🍄 Mario</a></li>
+    <li><a href="https://mackinnon1990.github.io/Bitplay/games/DonkeyKong/index.html">🦍 Donkey Kong</a></li>
+  </ul>
+
+  <div class="donate">
+    <p>Support this project:</p>
+    <a href="https://ko-fi.com/theewhiterabbit" target="_blank">☕ Buy me a Ko-fi</a>
+    <a href="https://www.paypal.biz/GamerDadFPO" target="_blank">💸 Donate via PayPal</a>
   </div>
-
-  <!-- redeploy -->
-  <!-- Force GitHub Pages rebuild: added this comment -->
 </body>
 </html>

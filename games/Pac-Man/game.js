@@ -2,10 +2,6 @@ const canvas = document.getElementById('gameCanvas');
 const ctx = canvas.getContext('2d');
 
 const tileSize = 20;
-const rows = 31;
-const cols = 28;
-canvas.width = tileSize * cols;
-canvas.height = tileSize * rows;
 
 // Maze layout (0 = dot/path, 1 = wall)
 const maze = [
@@ -33,258 +29,95 @@ const maze = [
   [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
 ];
 
-let pacman = {
-  x: 13 * tileSize + tileSize / 2,
-  y: 23 * tileSize + tileSize / 2,
-  size: tileSize,
+const rows = maze.length;
+const cols = maze[0].length;
+canvas.width = cols * tileSize;
+canvas.height = rows * tileSize;
+
+let score = 0;
+let gameRunning = false;
+
+const player = {
+  x: 1,
+  y: 1,
   dirX: 0,
   dirY: 0,
-  speed: 3,
-  score: 0,
-  alive: false,
+  color: 'yellow'
 };
 
-let dots = [];
-let ghosts = [];
-
-function generateDots() {
-  dots = [];
-  for (let r = 0; r < rows; r++) {
-    for (let c = 0; c < cols; c++) {
-      if (maze[r][c] === 0) {
-        dots.push({ x: c * tileSize + tileSize / 2, y: r * tileSize + tileSize / 2, eaten: false });
+function drawMaze() {
+  for (let y = 0; y < rows; y++) {
+    for (let x = 0; x < cols; x++) {
+      if (maze[y][x] === 1) {
+        ctx.fillStyle = 'blue';
+        ctx.fillRect(x * tileSize, y * tileSize, tileSize, tileSize);
+      } else if (maze[y][x] === 0) {
+        ctx.fillStyle = 'white';
+        ctx.beginPath();
+        ctx.arc(x * tileSize + tileSize / 2, y * tileSize + tileSize / 2, 3, 0, 2 * Math.PI);
+        ctx.fill();
       }
     }
   }
 }
 
-function drawMaze() {
-  for (let r = 0; r < rows; r++) {
-    for (let c = 0; c < cols; c++) {
-      ctx.fillStyle = maze[r][c] === 1 ? 'blue' : 'black';
-      ctx.fillRect(c * tileSize, r * tileSize, tileSize, tileSize);
-    }
-  }
-}
-
-function drawDots() {
-  ctx.fillStyle = 'white';
-  dots.forEach(dot => {
-    if (!dot.eaten) {
-      ctx.beginPath();
-      ctx.arc(dot.x, dot.y, 3, 0, Math.PI * 2);
-      ctx.fill();
-    }
-  });
-}
-
-function drawPacman() {
-  ctx.fillStyle = 'yellow';
+function drawPlayer() {
   ctx.beginPath();
-  ctx.arc(pacman.x, pacman.y, pacman.size / 2, 0.25 * Math.PI, 1.75 * Math.PI);
-  ctx.lineTo(pacman.x, pacman.y);
+  ctx.arc(player.x * tileSize + tileSize / 2, player.y * tileSize + tileSize / 2, tileSize / 2 - 2, 0, Math.PI * 2);
+  ctx.fillStyle = player.color;
   ctx.fill();
 }
 
-function isWall(x, y) {
-  const col = Math.floor(x / tileSize);
-  const row = Math.floor(y / tileSize);
-  if (row < 0 || row >= rows || col < 0 || col >= cols) return true;
-  return maze[row][col] === 1;
+function drawScore() {
+  const scoreEl = document.getElementById("score");
+  if (scoreEl) scoreEl.textContent = `Score: ${score}`;
 }
 
-function isDot(x, y) {
-  return dots.find(dot => !dot.eaten && Math.abs(dot.x - x) < tileSize / 2 && Math.abs(dot.y - y) < tileSize / 2);
-}
+function update() {
+  const nextX = player.x + player.dirX;
+  const nextY = player.y + player.dirY;
 
-function updatePacman() {
-  if (!pacman.alive) return;
+  if (maze[nextY][nextX] !== 1) {
+    player.x = nextX;
+    player.y = nextY;
 
-  let nextX = pacman.x + pacman.dirX * pacman.speed;
-  let nextY = pacman.y + pacman.dirY * pacman.speed;
-
-  if (
-    !isWall(nextX - pacman.size / 2, pacman.y - pacman.size / 2) &&
-    !isWall(nextX + pacman.size / 2, pacman.y + pacman.size / 2)
-  ) {
-    pacman.x = nextX;
-  }
-
-  if (
-    !isWall(pacman.x - pacman.size / 2, nextY - pacman.size / 2) &&
-    !isWall(pacman.x + pacman.size / 2, nextY + pacman.size / 2)
-  ) {
-    pacman.y = nextY;
-  }
-
-  let dot = isDot(pacman.x, pacman.y);
-  if (dot) {
-    dot.eaten = true;
-    pacman.score++;
-    if (pacman.score === dots.length) {
-      gameOver(true);
+    if (maze[player.y][player.x] === 0) {
+      maze[player.y][player.x] = 2; // Collected
+      score += 10;
     }
   }
-}
-
-class Ghost {
-  constructor(x, y, color) {
-    this.x = x;
-    this.y = y;
-    this.size = tileSize;
-    this.color = color;
-    this.dirX = 0;
-    this.dirY = 0;
-    this.speed = 2;
-    this.chooseRandomDirection();
-  }
-  draw() {
-    ctx.fillStyle = this.color;
-    ctx.beginPath();
-    ctx.arc(this.x, this.y, this.size / 2, Math.PI, 0);
-    ctx.lineTo(this.x + this.size / 2, this.y + this.size / 2);
-    ctx.lineTo(this.x - this.size / 2, this.y + this.size / 2);
-    ctx.closePath();
-    ctx.fill();
-  }
-  chooseRandomDirection() {
-    const directions = [
-      { x: 1, y: 0 },
-      { x: -1, y: 0 },
-      { x: 0, y: 1 },
-      { x: 0, y: -1 }
-    ];
-    const choice = directions[Math.floor(Math.random() * directions.length)];
-    this.dirX = choice.x;
-    this.dirY = choice.y;
-  }
-  update() {
-    const nextX = this.x + this.dirX * this.speed;
-    const nextY = this.y + this.dirY * this.speed;
-    if (
-      !isWall(nextX - this.size / 2, nextY - this.size / 2) &&
-      !isWall(nextX + this.size / 2, nextY + this.size / 2)
-    ) {
-      this.x = nextX;
-      this.y = nextY;
-    } else {
-      this.chooseRandomDirection();
-    }
-
-    if (Math.abs(this.x - pacman.x) < this.size / 2 && Math.abs(this.y - pacman.y) < this.size / 2) {
-      gameOver(false);
-    }
-  }
-}
-
-function drawGhosts() {
-  ghosts.forEach(g => g.draw());
-}
-
-function updateGhosts() {
-  ghosts.forEach(g => g.update());
-}
-
-function clearCanvas() {
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
 }
 
 function draw() {
-  clearCanvas();
+  ctx.fillStyle = 'black';
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
   drawMaze();
-  drawDots();
-  drawPacman();
-  drawGhosts();
+  drawPlayer();
   drawScore();
 }
 
-function drawScore() {
-  document.getElementById('scoreText').textContent = 'Score: ' + pacman.score;
-}
-
-}
-
-const popup = document.getElementById('popup');
-const popupMessage = document.getElementById('popup-message');
-const popupRestart = document.getElementById('popup-restart');
-
-function gameOver(won) {
-  pacman.alive = false;
-  popup.classList.remove('hidden');
-  popupMessage.textContent = won ? 'You won! 🎉' : 'Game over! 👻';
-  cancelAnimationFrame(animationId);
-}
-
-popupRestart.addEventListener('click', () => {
-  popup.classList.add('hidden');
-  resetGame();
-  animationId = requestAnimationFrame(gameLoop);
-});
-
-function resetGame() {
-  pacman.x = 13 * tileSize + tileSize / 2;
-  pacman.y = 23 * tileSize + tileSize / 2;
-  pacman.dirX = 0;
-  pacman.dirY = 0;
-  pacman.score = 0;
-  pacman.alive = true;
-  generateDots();
-  ghosts = [
-    new Ghost(tileSize * 13 + tileSize / 2, tileSize * 11 + tileSize / 2, 'red'),
-    new Ghost(tileSize * 14 + tileSize / 2, tileSize * 11 + tileSize / 2, 'pink'),
-    new Ghost(tileSize * 13 + tileSize / 2, tileSize * 12 + tileSize / 2, 'cyan'),
-    new Ghost(tileSize * 14 + tileSize / 2, tileSize * 12 + tileSize / 2, 'orange'),
-  ];
-  document.getElementById('startButton').style.display = 'block';
-}
-
-let animationId;
-
 function gameLoop() {
-  updatePacman();
-  updateGhosts();
+  if (!gameRunning) return;
+  update();
   draw();
-  if (pacman.alive) {
-    animationId = requestAnimationFrame(gameLoop);
-  }
+  requestAnimationFrame(gameLoop);
 }
 
-document.getElementById('startButton').addEventListener('click', () => {
-  resetGame();
-  animationId = requestAnimationFrame(gameLoop);
-  document.getElementById('startButton').style.display = 'none';
-});
+function startGame() {
+  gameRunning = true;
+  player.x = 1;
+  player.y = 1;
+  score = 0;
+  gameLoop();
+}
 
-// Keyboard controls
-document.addEventListener('keydown', (e) => {
-  switch (e.key) {
-    case 'ArrowUp':
-    case 'w':
-    case 'W':
-      pacman.dirX = 0;
-      pacman.dirY = -1;
-      break;
-    case 'ArrowDown':
-    case 's':
-    case 'S':
-      pacman.dirX = 0;
-      pacman.dirY = 1;
-      break;
-    case 'ArrowLeft':
-    case 'a':
-    case 'A':
-      pacman.dirX = -1;
-      pacman.dirY = 0;
-      break;
-    case 'ArrowRight':
-    case 'd':
-    case 'D':
-      pacman.dirX = 1;
-      pacman.dirY = 0;
-      break;
+document.getElementById("startBtn").addEventListener("click", startGame);
+
+document.addEventListener("keydown", (e) => {
+  switch (e.key.toLowerCase()) {
+    case 'w': player.dirX = 0; player.dirY = -1; break;
+    case 's': player.dirX = 0; player.dirY = 1; break;
+    case 'a': player.dirX = -1; player.dirY = 0; break;
+    case 'd': player.dirX = 1; player.dirY = 0; break;
   }
 });
-
-// Start screen setup
-generateDots();
-draw();

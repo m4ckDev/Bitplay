@@ -11,16 +11,23 @@
     <button id="startButton">Start Game</button>
     <canvas id="gameCanvas" width="560" height="620"></canvas>
 
+    <!-- Pop-up Restart Overlay -->
     <div id="popup" class="hidden">
       <div id="popup-message"></div>
       <button id="popup-restart">Play Again</button>
     </div>
   </div>
 
-  <!-- Bonus score UI and scanline overlay -->
-  <div class="score-text" id="scoreText">Score: 0</div>
-  <div class="scanlines"></div>
+  <!-- Score + Scanline Overlay -->
+  <div class="score-text" id="scoreText">Score: 0 | Level: 1</div>
+  <div class="scanlines">x</div>
 
+  <!-- JavaScript -->
+  <script>
+    // Constants needed by game.js
+    const pelletRadius = 3;
+    const powerPelletRadius = 6;
+  </script>
   <script src="game.js"></script>
 </body>
 </html>

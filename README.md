@@ -55,7 +55,7 @@ style.css
 
 ## 🌐 Live Website
 
-🔗 [mackinnon1990.github.io/bitplay](https://mackinnon1990.github.io/Bitplay)  
+🔗 [mackinnon1990.github.io/Bitplay](https://mackinnon1990.github.io/Bitplay)  
 Hosted via **GitHub Pages** ✅
 
 ---

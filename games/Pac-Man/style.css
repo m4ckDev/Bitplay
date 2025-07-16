@@ -20,7 +20,6 @@ canvas {
   border-radius: 8px;
 }
 
-/* Popup overlay */
 #popup {
   position: fixed;
   top: 50%;
@@ -70,19 +69,17 @@ canvas {
 }
 
 #startButton {
-  padding: 0.5rem 1rem;
+  font-size: 1.1rem;
+  padding: 0.5rem 1.5rem;
   font-weight: bold;
-  font-size: 1rem;
-  cursor: pointer;
-  border-radius: 8px;
+  background-color: cyan;
   border: none;
-  background-color: #00ffff;
-  color: black;
-  transition: background 0.3s ease;
+  border-radius: 8px;
+  cursor: pointer;
+  box-shadow: 0 0 10px cyan;
+  transition: background-color 0.3s ease;
 }
 
 #startButton:hover {
-  background-color: #ff00ff;
-  color: white;
-  box-shadow: 0 0 8px #ff00ff;
+  background-color: #00b8b8;
 }

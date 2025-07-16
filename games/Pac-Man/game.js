@@ -187,7 +187,7 @@ function update() {
   else frightened = false;
 
   movePlayer();
-  if (frameCount % 4 === 0) moveGhosts();
+  if (frameCount % 6 === 0) moveGhosts();
   checkLevelClear();
   draw();
 }

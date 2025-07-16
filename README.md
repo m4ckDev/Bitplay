@@ -42,7 +42,7 @@ If you're enjoying the arcade, consider supporting the project:
 ## 📁 Folder Structure
 /games
 /snake
-/pacman
+/Pac-Man
 /Mario
 /DonkeyKong
 /assets

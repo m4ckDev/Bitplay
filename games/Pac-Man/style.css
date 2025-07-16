@@ -68,3 +68,21 @@ canvas {
   margin: 2rem auto;
   max-width: 600px;
 }
+
+#startButton {
+  padding: 0.5rem 1rem;
+  font-weight: bold;
+  font-size: 1rem;
+  cursor: pointer;
+  border-radius: 8px;
+  border: none;
+  background-color: #00ffff;
+  color: black;
+  transition: background 0.3s ease;
+}
+
+#startButton:hover {
+  background-color: #ff00ff;
+  color: white;
+  box-shadow: 0 0 8px #ff00ff;
+}

@@ -121,3 +121,5 @@ document.addEventListener("keydown", (e) => {
     case 'd': player.dirX = 1; player.dirY = 0; break;
   }
 });
+
+draw();

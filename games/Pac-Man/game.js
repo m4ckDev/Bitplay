@@ -124,7 +124,8 @@ function isDot(x, y) {
 function updatePacman() {
   let nextX = pacman.x + pacman.dirX * pacman.speed;
   let nextY = pacman.y + pacman.dirY * pacman.speed;
-
+  
+  // Collision with walls (checks four corners)
   if (!isWall(nextX, pacman.y) && !isWall(nextX + tileSize - 1, pacman.y) &&
       !isWall(nextX, pacman.y + tileSize - 1) && !isWall(nextX + tileSize - 1, pacman.y + tileSize - 1)) {
     pacman.x = nextX;
@@ -231,8 +232,9 @@ function gameLoop() {
   drawDots();
   drawPacman();
   ghosts.forEach(drawGhost);
+  
   if (pacman.alive) {
-    updatePacman();
+    updatePacman();    // Pac-Man position update
     updateGhosts();
     checkGhostCollisions();
     gameLoopId = requestAnimationFrame(gameLoop);

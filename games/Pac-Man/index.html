@@ -10,11 +10,16 @@
   <div class="game-container">
     <button id="startButton">Start Game</button>
     <canvas id="gameCanvas" width="560" height="620"></canvas>
+
     <div id="popup" class="hidden">
       <div id="popup-message"></div>
       <button id="popup-restart">Play Again</button>
     </div>
   </div>
+
+  <!-- Bonus score UI and scanline overlay -->
+  <div class="score-text" id="scoreText">Score: 0</div>
+  <div class="scanlines"></div>
 
   <script src="game.js"></script>
 </body>

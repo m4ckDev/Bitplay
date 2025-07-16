@@ -3,31 +3,15 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>🟡 Pac-Man Classic</title>
+  <title>Pac-Man Classic</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
   <div class="game-container">
     <button id="startButton">Start Game</button>
     <canvas id="gameCanvas" width="560" height="620"></canvas>
-
-    <!-- Pop-up Restart Overlay -->
-    <div id="popup" class="hidden">
-      <div id="popup-message"></div>
-      <button id="popup-restart">Play Again</button>
-    </div>
+    <div class="score-text" id="scoreText">Score: 0</div>
   </div>
-
-  <!-- Score + Scanline Overlay -->
-  <div class="score-text" id="scoreText">Score: 0 | Level: 1</div>
-  <div class="scanlines">x</div>
-
-  <!-- JavaScript -->
-  <script>
-    // Constants needed by game.js
-    const pelletRadius = 3;
-    const powerPelletRadius = 6;
-  </script>
   <script src="game.js"></script>
 </body>
 </html>

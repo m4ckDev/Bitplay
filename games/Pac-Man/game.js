@@ -199,9 +199,9 @@ function draw() {
 }
 
 function drawScore() {
-  ctx.fillStyle = 'white';
-  ctx.font = '20px monospace';
-  ctx.fillText('Score: ' + pacman.score, 10, canvas.height - 10);
+  document.getElementById('scoreText').textContent = 'Score: ' + pacman.score;
+}
+
 }
 
 const popup = document.getElementById('popup');

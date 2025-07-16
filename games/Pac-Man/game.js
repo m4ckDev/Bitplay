@@ -69,7 +69,7 @@ function drawPlayer() {
 }
 
 function drawScore() {
-  const scoreEl = document.getElementById("score");
+const scoreEl = document.getElementById("scoreText");
   if (scoreEl) scoreEl.textContent = `Score: ${score}`;
 }
 
@@ -111,7 +111,7 @@ function startGame() {
   gameLoop();
 }
 
-document.getElementById("startBtn").addEventListener("click", startGame);
+document.getElementById("startButton").addEventListener("click", startGame);
 
 document.addEventListener("keydown", (e) => {
   switch (e.key.toLowerCase()) {

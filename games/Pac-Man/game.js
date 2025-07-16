@@ -31,8 +31,6 @@ const maze = [
 
 const rows = maze.length;
 const cols = maze[0].length;
-canvas.width = cols * tileSize;
-canvas.height = rows * tileSize;
 
 let score = 0;
 let gameRunning = false;
@@ -69,7 +67,7 @@ function drawPlayer() {
 }
 
 function drawScore() {
-const scoreEl = document.getElementById("scoreText");
+  const scoreEl = document.getElementById("scoreText");
   if (scoreEl) scoreEl.textContent = `Score: ${score}`;
 }
 
@@ -82,7 +80,7 @@ function update() {
     player.y = nextY;
 
     if (maze[player.y][player.x] === 0) {
-      maze[player.y][player.x] = 2; // Collected
+      maze[player.y][player.x] = 2; // mark dot as eaten
       score += 10;
     }
   }
@@ -108,11 +106,12 @@ function startGame() {
   player.x = 1;
   player.y = 1;
   score = 0;
+  player.dirX = 0;
+  player.dirY = 0;
   gameLoop();
 }
 
 document.getElementById("startButton").addEventListener("click", startGame);
-const scoreEl = document.getElementById("scoreText");
 
 document.addEventListener("keydown", (e) => {
   switch (e.key.toLowerCase()) {

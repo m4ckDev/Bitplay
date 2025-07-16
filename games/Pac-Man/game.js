@@ -1,13 +1,17 @@
+
 const canvas = document.getElementById('gameCanvas');
 const ctx = canvas.getContext('2d');
 
 const tileSize = 20;
-
-let level = 1;
-let moveInterval = 1;
-let frameCount = 0;
 let score = 0;
+let level = 1;
 let gameRunning = false;
+let frameCount = 0;
+let frightened = false;
+let frightenedTimer = 0;
+
+const pelletRadius = 3;
+const powerPelletRadius = 6;
 
 const baseMaze = [
   [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
@@ -34,10 +38,12 @@ const baseMaze = [
   [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]
 ];
 
-const rows = maze.length;
-const cols = maze[0].length;
+const rows = baseMaze.length;
+const cols = baseMaze[0].length;
+let maze = [];
 
 const player = { x: 1, y: 1, dirX: 0, dirY: 0, color: 'yellow' };
+
 const ghosts = [
   { x: 13, y: 2, color: 'red', dirX: 0, dirY: 0, penTime: 0 },
   { x: 14, y: 2, color: 'pink', dirX: 0, dirY: 0, penTime: 60 },
@@ -163,9 +169,11 @@ function checkLevelClear() {
 function resetMaze() {
   frightened = false;
   frightenedTimer = 0;
-  maze.forEach((row, y) => {
-    maze[y] = row.map(cell => cell === 2 ? 0 : cell);
-  });
+  maze = baseMaze.map(row => row.map(cell => cell === 2 ? 0 : cell));
+  maze[1][1] = 2; // prevent respawning on pellet
+  maze[1][26] = 3;
+  maze[1][1] = 3;
+
   player.x = 1; player.y = 1;
   ghosts.forEach((g, i) => {
     g.x = 13 + (i % 2); g.y = 2 + Math.floor(i / 2);

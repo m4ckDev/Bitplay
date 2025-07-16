@@ -38,7 +38,7 @@ let score = 0;
 let gameRunning = false;
 
 let frameCount = 0;
-const moveInterval = 8; // slow down movement to match classic
+const moveInterval = 18; // slow down movement to match classic
 
 const player = {
   x: 1,

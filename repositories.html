@@ -1,0 +1,279 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>🚀 My GitHub Repositories</title>
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+  <style>
+    body {
+      margin: 0;
+      background-color: #0e0e0e;
+      font-family: 'Press Start 2P', monospace;
+      color: #ffffff;
+      padding: 40px 20px;
+      text-align: center;
+    }
+
+    .header {
+      margin-bottom: 40px;
+    }
+
+    .logo {
+      max-width: 160px;
+      margin-bottom: 25px;
+    }
+
+    h1 {
+      font-size: 1.6rem;
+      color: #ffea00;
+      text-shadow: 0 0 8px #ffea00;
+      margin-bottom: 15px;
+    }
+
+    .description {
+      color: #ccc;
+      font-size: 0.8rem;
+      margin-bottom: 30px;
+      line-height: 1.6;
+    }
+
+    .repo-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+      gap: 25px;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .repo-card {
+      background: linear-gradient(135deg, #1a1a2e, #16213e);
+      border: 2px solid #00ffff;
+      border-radius: 12px;
+      padding: 20px;
+      transition: all 0.3s ease;
+      text-align: left;
+    }
+
+    .repo-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 0 20px #00ffff;
+      border-color: #ffea00;
+    }
+
+    .repo-title {
+      color: #00ffff;
+      font-size: 1rem;
+      margin-bottom: 10px;
+      text-decoration: none;
+      display: block;
+    }
+
+    .repo-title:hover {
+      color: #ffea00;
+    }
+
+    .repo-description {
+      color: #ccc;
+      font-size: 0.7rem;
+      line-height: 1.4;
+      margin-bottom: 15px;
+    }
+
+    .repo-tech {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 15px;
+    }
+
+    .tech-tag {
+      background: #ff00ff;
+      color: #000;
+      padding: 4px 8px;
+      border-radius: 6px;
+      font-size: 0.6rem;
+    }
+
+    .repo-links {
+      display: flex;
+      gap: 15px;
+    }
+
+    .repo-link {
+      color: #00ff00;
+      text-decoration: none;
+      font-size: 0.7rem;
+      padding: 8px 12px;
+      border: 1px solid #00ff00;
+      border-radius: 6px;
+      transition: all 0.3s ease;
+    }
+
+    .repo-link:hover {
+      background: #00ff00;
+      color: #000;
+    }
+
+    .back-link {
+      position: fixed;
+      top: 20px;
+      left: 20px;
+      color: #ff66cc;
+      text-decoration: none;
+      font-size: 0.8rem;
+      padding: 10px 15px;
+      border: 1px solid #ff66cc;
+      border-radius: 8px;
+      background: rgba(0, 0, 0, 0.8);
+    }
+
+    .back-link:hover {
+      background: #ff66cc;
+      color: #000;
+    }
+
+    @media (max-width: 768px) {
+      .repo-grid {
+        grid-template-columns: 1fr;
+      }
+      
+      h1 {
+        font-size: 1.2rem;
+      }
+      
+      .back-link {
+        position: static;
+        display: inline-block;
+        margin-bottom: 20px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <a href="index.html" class="back-link">← Back to BitPlay</a>
+
+  <div class="header">
+    <img src="assets/Bitplay.png" alt="BitPlay Logo" class="logo" />
+    <h1>My GitHub Repositories</h1>
+    <p class="description">Explore my coding projects and contributions</p>
+  </div>
+
+  <div class="repo-grid">
+    <!-- BitPlay Repository -->
+    <div class="repo-card">
+      <a href="https://github.com/mackinnon1990/Bitplay" target="_blank" class="repo-title">
+        🎮 BitPlay - Retro Arcade
+      </a>
+      <p class="repo-description">
+        A collection of classic arcade games built with HTML5, CSS3, and vanilla JavaScript. Features Snake, Pac-Man, Mario, and Donkey Kong.
+      </p>
+      <div class="repo-tech">
+        <span class="tech-tag">HTML5</span>
+        <span class="tech-tag">CSS3</span>
+        <span class="tech-tag">JavaScript</span>
+        <span class="tech-tag">Canvas API</span>
+      </div>
+      <div class="repo-links">
+        <a href="https://github.com/mackinnon1990/Bitplay" target="_blank" class="repo-link">📂 Source Code</a>
+        <a href="https://mackinnon1990.github.io/Bitplay" target="_blank" class="repo-link">🌐 Live Demo</a>
+      </div>
+    </div>
+
+    <!-- Add more repositories here - Template for additional repos -->
+    <div class="repo-card">
+      <a href="https://github.com/mackinnon1990/YOUR_REPO_NAME" target="_blank" class="repo-title">
+        🚀 Project Name
+      </a>
+      <p class="repo-description">
+        Description of your project goes here. Explain what it does and what makes it interesting.
+      </p>
+      <div class="repo-tech">
+        <span class="tech-tag">Technology 1</span>
+        <span class="tech-tag">Technology 2</span>
+        <span class="tech-tag">Technology 3</span>
+      </div>
+      <div class="repo-links">
+        <a href="https://github.com/mackinnon1990/YOUR_REPO_NAME" target="_blank" class="repo-link">📂 Source Code</a>
+        <a href="#" target="_blank" class="repo-link">🌐 Live Demo</a>
+      </div>
+    </div>
+
+    <!-- Template for Web Development Project -->
+    <div class="repo-card">
+      <a href="https://github.com/mackinnon1990/YOUR_WEB_PROJECT" target="_blank" class="repo-title">
+        💻 Web Application
+      </a>
+      <p class="repo-description">
+        A full-stack web application with modern features and responsive design.
+      </p>
+      <div class="repo-tech">
+        <span class="tech-tag">React</span>
+        <span class="tech-tag">Node.js</span>
+        <span class="tech-tag">MongoDB</span>
+      </div>
+      <div class="repo-links">
+        <a href="https://github.com/mackinnon1990/YOUR_WEB_PROJECT" target="_blank" class="repo-link">📂 Source Code</a>
+        <a href="#" target="_blank" class="repo-link">🌐 Live Demo</a>
+      </div>
+    </div>
+
+    <!-- Template for Python Project -->
+    <div class="repo-card">
+      <a href="https://github.com/mackinnon1990/YOUR_PYTHON_PROJECT" target="_blank" class="repo-title">
+        🐍 Python Tool
+      </a>
+      <p class="repo-description">
+        A useful Python script/application that automates tasks or solves specific problems.
+      </p>
+      <div class="repo-tech">
+        <span class="tech-tag">Python</span>
+        <span class="tech-tag">Pandas</span>
+        <span class="tech-tag">Flask</span>
+      </div>
+      <div class="repo-links">
+        <a href="https://github.com/mackinnon1990/YOUR_PYTHON_PROJECT" target="_blank" class="repo-link">📂 Source Code</a>
+      </div>
+    </div>
+
+    <!-- Template for Mobile App -->
+    <div class="repo-card">
+      <a href="https://github.com/mackinnon1990/YOUR_MOBILE_APP" target="_blank" class="repo-title">
+        📱 Mobile App
+      </a>
+      <p class="repo-description">
+        Cross-platform mobile application with native performance and modern UI.
+      </p>
+      <div class="repo-tech">
+        <span class="tech-tag">React Native</span>
+        <span class="tech-tag">Firebase</span>
+        <span class="tech-tag">TypeScript</span>
+      </div>
+      <div class="repo-links">
+        <a href="https://github.com/mackinnon1990/YOUR_MOBILE_APP" target="_blank" class="repo-link">📂 Source Code</a>
+        <a href="#" target="_blank" class="repo-link">📱 App Store</a>
+      </div>
+    </div>
+
+    <!-- Template for API/Backend -->
+    <div class="repo-card">
+      <a href="https://github.com/mackinnon1990/YOUR_API_PROJECT" target="_blank" class="repo-title">
+        🔧 REST API
+      </a>
+      <p class="repo-description">
+        RESTful API with authentication, database integration, and comprehensive documentation.
+      </p>
+      <div class="repo-tech">
+        <span class="tech-tag">Express.js</span>
+        <span class="tech-tag">PostgreSQL</span>
+        <span class="tech-tag">JWT</span>
+      </div>
+      <div class="repo-links">
+        <a href="https://github.com/mackinnon1990/YOUR_API_PROJECT" target="_blank" class="repo-link">📂 Source Code</a>
+        <a href="#" target="_blank" class="repo-link">📖 API Docs</a>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

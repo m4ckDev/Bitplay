@@ -1,69 +1,93 @@
-# 🕹️ BitPlay
+🕹️ BitPlay
 
-**BitPlay** is a free, browser-based retro arcade packed with classic-inspired games — built with **HTML, CSS, and JavaScript**.  
+BitPlay is a free, browser-based retro arcade packed with classic-inspired games — built with HTML, CSS, and JavaScript.
 🎯 No installs, no ads, just pure nostalgic fun.
 
----
-
-## 🎮 Play Now  
+🎮 Play Now
 
 Click a game below to jump in instantly:
 
-- 🐍 [Snake](snake-game/)
-- 🟡 [Pac-Man](pacman-game/)
-- 🔴 [Mario](mario-game/)  
-- 🟣 [Donkey Kong](donkey-kong/)
+🎯 Pong Classic
 
+🐍 Snake Reloaded
 
----
+👻 Pac-Maze
 
-## 💡 About This Project
+🚀 Space Shooter
 
-This project was built to bring back the **old-school joy of arcade gaming**, using:
+🔴 Mario Adventure
 
-- HTML5  
-- CSS3  
-- Vanilla JavaScript  
-- ✅ Fully responsive layout (desktop) !Working on the Mobile option!
+🟣 Donkey Kong Returns
 
-> All games are organized in the `/games` folder for easy access and expansion.
+All games are playable directly in your browser — desktop and mobile supported (touch controls available on most titles).
 
----
+💡 About This Project
 
-## ☕ Support BitPlay
+BitPlay was built to revive the old-school joy of arcade gaming, reimagined for the browser.
+Each title is hand-coded using modern web tech while staying true to its retro roots.
 
-If you're enjoying the arcade, consider supporting the project:
+Built with:
 
-- [Buy me a Ko-fi 🧃](https://ko-fi.com/yourkofilink)  
-- [Donate via PayPal 🐸](https://paypal.me/yourpaypallink)
+⚙️ HTML5 for game structure
 
-> Your support helps keep these games free and fun for everyone.
+🎨 CSS3 for styling and layout
 
----
+🧠 Vanilla JavaScript for all gameplay logic
 
-## 📁 Folder Structure
+📱 Fully responsive design (optimized for desktop, with mobile support expanding)
+
+All games are neatly organized in the /games folder for easy updates, maintenance, and new releases.
+
+🚀 New Additions
+🎯 Pong Classic
+
+A faithful recreation of the 1972 arcade hit. Smooth AI, sound effects, and mobile controls.
+Play Pong
+
+🚀 Space Shooter
+
+Blast through waves of enemies, dodge fire, and chase high scores in this retro-inspired shooter.
+Play Space Shooter
+
+These two new titles mark the start of BitPlay’s Retro Reloaded Series, focusing on classic remakes with modern polish.
+
+☕ Support BitPlay
+
+If you’re enjoying the arcade, consider supporting the project to keep the games free and updated:
+
+Buy me a Ko-fi 🧃
+
+Donate via PayPal 🐸
+
+Your support helps fund new game releases, improved mobile controls, and better visuals.
+
+📁 Folder Structure
 /games
-/snake
-/Pac-Man
-/Mario
-/DonkeyKong
+ ├── pong
+ ├── snake
+ ├── pacman-game
+ ├── space-shooter
+ ├── mario-game
+ ├── donkey-kong
 /assets
-logo.png
+ ├── logo.png
 index.html
 style.css
 
+🌐 Live Website
 
----
+🔗 m4ckDev.github.io/BitPlay
 
-## 🌐 Live Website
+Hosted via GitHub Pages ✅
 
-🔗 [mackinnon1990.github.io/Bitplay](https://mackinnon1990.github.io/Bitplay)  
-Hosted via **GitHub Pages** ✅
+🎮 Want to see it in action?
+Visit the site and try every game directly — no installation needed.
 
----
+📬 Contact / Feedback
 
-## 📬 Contact / Feedback
+💬 Have a suggestion, bug report, or idea for a new game?
+Open an issue or reach out directly — community feedback is always welcome!
 
-Have a suggestion or found a bug?  
-Open an issue or message me directly — I’d love to hear from you!
+🧑‍💻 Created by m4ckDev
 
+Part of the BitPlay Retro Project

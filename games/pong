@@ -1,1 +1,426 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>BitPlay • Pong Classic</title>
+<style>
+  :root {
+    --fg: #ffffff;
+    --bg: #000000;
+    --accent: #00ff99;
+    --muted: #888;
+  }
+  * { box-sizing: border-box; }
+  html, body {
+    margin: 0;
+    height: 100%;
+    background: var(--bg);
+    color: var(--fg);
+    font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+  .wrap {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 12px 12px 20px;
+    display: grid;
+    gap: 12px;
+  }
+
+  header {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 10px 16px;
+    justify-content: space-between;
+  }
+  header h1 {
+    font-size: clamp(18px, 2.6vw, 28px);
+    margin: 0;
+    letter-spacing: .5px;
+  }
+  .controls {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    align-items: center;
+  }
+  .controls > * { font-size: 14px; }
+  button, select, label input[type="checkbox"] {
+    background: #121212;
+    color: var(--fg);
+    border: 1px solid #2a2a2a;
+    border-radius: 8px;
+    padding: 8px 12px;
+    cursor: pointer;
+  }
+  button:hover, select:hover { border-color: var(--accent); }
+  button.primary { background: var(--accent); color: #001a12; border: none; }
+  .hint { color: var(--muted); font-size: 12px; }
+
+  .stage {
+    position: relative;
+    border: 2px solid #2a2a2a;
+    border-radius: 12px;
+    overflow: hidden;
+    background: #000;
+    aspect-ratio: 16 / 10; /* keeps it responsive */
+  }
+  canvas {
+    width: 100%;
+    height: 100%;
+    display: block;
+    background: #000;
+  }
+
+  /* On-screen mobile controls */
+  .mobile-controls {
+    display: none;
+    gap: 10px;
+    justify-content: space-between;
+    align-items: stretch;
+  }
+  .pad-col {
+    flex: 1;
+    display: grid;
+    gap: 10px;
+  }
+  .pad-btn {
+    user-select: none;
+    -webkit-user-select: none;
+    touch-action: none;
+    background: #111;
+    border: 1px solid #2a2a2a;
+    border-radius: 12px;
+    padding: 16px;
+    text-align: center;
+    font-weight: 600;
+  }
+  .pad-btn:active { border-color: var(--accent); outline: 2px solid #003322; }
+
+  footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    color: var(--muted);
+    font-size: 12px;
+  }
+
+  @media (max-width: 780px) {
+    .mobile-controls { display: flex; }
+  }
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <h1>🕹️ BitPlay • Pong Classic</h1>
+      <div class="controls">
+        <button id="startBtn" class="primary">Start</button>
+        <button id="pauseBtn">Pause</button>
+        <button id="resetBtn">Restart</button>
+        <label class="hint" style="display:flex;align-items:center;gap:6px;">
+          <input type="checkbox" id="soundToggle" checked />
+          Sound
+        </label>
+        <label class="hint" style="display:flex;align-items:center;gap:6px;">
+          AI:
+          <select id="aiSelect" title="AI difficulty">
+            <option value="0.06">Easy</option>
+            <option value="0.09" selected>Normal</option>
+            <option value="0.12">Hard</option>
+            <option value="0.16">Insane</option>
+          </select>
+        </label>
+      </div>
+    </header>
+
+    <div class="stage">
+      <canvas id="game" width="1600" height="1000"></canvas>
+    </div>
+
+    <div class="mobile-controls">
+      <div class="pad-col">
+        <div class="pad-btn" id="mUp">▲ UP</div>
+        <div class="pad-btn" id="mDown">▼ DOWN</div>
+      </div>
+      <div class="pad-col">
+        <div class="pad-btn" id="mStart">▶ START / PAUSE</div>
+        <div class="pad-btn" id="mReset">↻ RESTART</div>
+      </div>
+    </div>
+
+    <footer>
+      <div>Controls: ↑ / ↓ or touch • P = Pause • R = Restart</div>
+      <div>First to 11 wins • Built by <strong>m4ckDev</strong></div>
+    </footer>
+  </div>
+
+<script>
+(() => {
+  // ---- Canvas & scaling (hi-DPI crispness) ----
+  const canvas = document.getElementById('game');
+  const ctx = canvas.getContext('2d');
+
+  // Game world coordinates are in logical pixels (canvas.width/height).
+  // The CSS scales it; we draw at native resolution for crisp lines.
+
+  // ---- Game constants ----
+  const WORLD_W = canvas.width;
+  const WORLD_H = canvas.height;
+  const NET_W = 8;
+  const PADDLE_W = 18, PADDLE_H = 170;
+  const BALL_R = 12;
+
+  // State
+  let running = false;
+  let lastTime = 0;
+  let aiFollow = 0.09; // default (Normal)
+
+  const state = {
+    player: { x: 40, y: WORLD_H/2 - PADDLE_H/2, dy: 0, speed: 780 },
+    ai:     { x: WORLD_W - 40 - PADDLE_W, y: WORLD_H/2 - PADDLE_H/2, dy: 0, speed: 760 },
+    ball:   { x: WORLD_W/2, y: WORLD_H/2, dx: 500, dy: 240, speed: 500 },
+    score:  { p: 0, a: 0, goal: 11 },
+    serveDir: Math.random() < 0.5 ? -1 : 1
+  };
+
+  // ---- Audio (tiny beeps) ----
+  let audioCtx;
+  const soundEnabled = () => document.getElementById('soundToggle').checked;
+  function beep(freq = 600, dur = 0.04, type = 'square', gain = 0.02) {
+    try {
+      if (!soundEnabled()) return;
+      audioCtx = audioCtx || new (window.AudioContext || window.webkitAudioContext)();
+      const o = audioCtx.createOscillator();
+      const g = audioCtx.createGain();
+      o.type = type;
+      o.frequency.value = freq;
+      g.gain.value = gain;
+      o.connect(g); g.connect(audioCtx.destination);
+      o.start();
+      setTimeout(() => { o.stop(); o.disconnect(); g.disconnect(); }, dur * 1000);
+    } catch {}
+  }
+
+  // ---- Helpers ----
+  function clamp(v, lo, hi) { return Math.max(lo, Math.min(hi, v)); }
+
+  function resetBall(direction = 1) {
+    state.ball.x = WORLD_W/2;
+    state.ball.y = WORLD_H/2;
+    const speed = 500;
+    // randomize angle a bit
+    const angle = (Math.random() * 0.6 - 0.3); // -0.3..0.3 radians
+    state.ball.dx = Math.cos(angle) * speed * direction;
+    state.ball.dy = Math.sin(angle) * speed;
+    state.ball.speed = speed;
+  }
+
+  function resetMatch() {
+    state.score.p = 0; state.score.a = 0;
+    state.player.y = WORLD_H/2 - PADDLE_H/2;
+    state.ai.y = WORLD_H/2 - PADDLE_H/2;
+    resetBall(state.serveDir);
+  }
+
+  // ---- Input (keyboard) ----
+  const keys = new Set();
+  document.addEventListener('keydown', (e) => {
+    keys.add(e.key);
+    if (e.key === 'p' || e.key === 'P') togglePause();
+    if (e.key === 'r' || e.key === 'R') { resetMatch(); running = true; }
+    // kick audio on first input (mobile policy)
+    if (!audioCtx && (e.key === 'ArrowUp' || e.key === 'ArrowDown')) beep(800, 0.01);
+  });
+  document.addEventListener('keyup', (e) => keys.delete(e.key));
+
+  // ---- Mobile controls ----
+  function pressHold(el, onDown, onUp) {
+    let id;
+    const start = (ev) => {
+      ev.preventDefault();
+      onDown();
+      id = setInterval(onDown, 60);
+      if (!audioCtx) beep(800, 0.01);
+    };
+    const end = (ev) => { ev && ev.preventDefault(); clearInterval(id); onUp && onUp(); };
+    ['pointerdown','touchstart','mousedown'].forEach(t => el.addEventListener(t, start));
+    ['pointerup','pointercancel','touchend','mouseup','mouseleave'].forEach(t => el.addEventListener(t, end));
+  }
+  const mUp = document.getElementById('mUp');
+  const mDown = document.getElementById('mDown');
+  const mStart = document.getElementById('mStart');
+  const mReset = document.getElementById('mReset');
+
+  pressHold(mUp,   () => { state.player.y -= state.player.speed * 0.06; });
+  pressHold(mDown, () => { state.player.y += state.player.speed * 0.06; });
+  mStart.addEventListener('click', () => togglePause());
+  mReset.addEventListener('click', () => { resetMatch(); running = true; });
+
+  // ---- Buttons ----
+  document.getElementById('startBtn').addEventListener('click', () => {
+    if (!audioCtx) beep(800, 0.01);
+    if (!running) { running = true; lastTime = performance.now(); requestAnimationFrame(loop); }
+  });
+  document.getElementById('pauseBtn').addEventListener('click', togglePause);
+  document.getElementById('resetBtn').addEventListener('click', () => { resetMatch(); running = true; });
+
+  document.getElementById('aiSelect').addEventListener('change', (e) => {
+    aiFollow = parseFloat(e.target.value || '0.09');
+  });
+
+  function togglePause() {
+    running = !running;
+    if (running) { lastTime = performance.now(); requestAnimationFrame(loop); }
+  }
+
+  // ---- Collision helpers ----
+  function rectCircleCollide(cx, cy, r, rx, ry, rw, rh) {
+    // clamp circle center to rect, then test distance
+    const nx = clamp(cx, rx, rx + rw);
+    const ny = clamp(cy, ry, ry + rh);
+    const dx = cx - nx, dy = cy - ny;
+    return (dx*dx + dy*dy) <= r*r;
+  }
+
+  // ---- Update ----
+  function update(dt) {
+    // Player input
+    const up = keys.has('ArrowUp') || keys.has('w') || keys.has('W');
+    const dn = keys.has('ArrowDown') || keys.has('s') || keys.has('S');
+    if (up) state.player.y -= state.player.speed * dt;
+    if (dn) state.player.y += state.player.speed * dt;
+
+    // Clamp paddles
+    state.player.y = clamp(state.player.y, 0, WORLD_H - PADDLE_H);
+    state.ai.y     = clamp(state.ai.y,     0, WORLD_H - PADDLE_H);
+
+    // Ball move
+    state.ball.x += state.ball.dx * dt;
+    state.ball.y += state.ball.dy * dt;
+
+    // AI follows ball with smoothing factor (aiFollow)
+    const aiCenter = state.ai.y + PADDLE_H / 2;
+    state.ai.y += (state.ball.y - aiCenter) * aiFollow;
+
+    // Wall bounce (top/bottom)
+    if (state.ball.y - BALL_R <= 0 && state.ball.dy < 0) {
+      state.ball.dy *= -1; state.ball.y = BALL_R; beep(880, 0.03);
+    } else if (state.ball.y + BALL_R >= WORLD_H && state.ball.dy > 0) {
+      state.ball.dy *= -1; state.ball.y = WORLD_H - BALL_R; beep(880, 0.03);
+    }
+
+    // Paddle collisions
+    // Left (player)
+    if (rectCircleCollide(state.ball.x, state.ball.y, BALL_R, state.player.x, state.player.y, PADDLE_W, PADDLE_H) && state.ball.dx < 0) {
+      const rel = (state.ball.y - (state.player.y + PADDLE_H/2)) / (PADDLE_H/2); // -1..1
+      const angle = rel * (Math.PI/4); // ±45°
+      const speed = Math.min(1200, Math.hypot(state.ball.dx, state.ball.dy) * 1.06);
+      state.ball.dx = Math.cos(angle) * speed;
+      state.ball.dy = Math.sin(angle) * speed;
+      state.ball.x = state.player.x + PADDLE_W + BALL_R; // nudge out
+      beep(520, 0.03);
+    }
+    // Right (AI)
+    if (rectCircleCollide(state.ball.x, state.ball.y, BALL_R, state.ai.x, state.ai.y, PADDLE_W, PADDLE_H) && state.ball.dx > 0) {
+      const rel = (state.ball.y - (state.ai.y + PADDLE_H/2)) / (PADDLE_H/2);
+      const angle = rel * (Math.PI/4);
+      const speed = Math.min(1200, Math.hypot(state.ball.dx, state.ball.dy) * 1.06);
+      state.ball.dx = -Math.cos(angle) * speed;
+      state.ball.dy = Math.sin(angle) * speed;
+      state.ball.x = state.ai.x - BALL_R; // nudge out
+      beep(520, 0.03);
+    }
+
+    // Score (left/right)
+    if (state.ball.x + BALL_R < 0) { // AI scores
+      state.score.a++; beep(240, 0.06, 'sawtooth', 0.03);
+      state.serveDir = -1;
+      resetBall(+1);
+      if (state.score.a >= state.score.goal) endRound(false);
+    }
+    if (state.ball.x - BALL_R > WORLD_W) { // Player scores
+      state.score.p++; beep(1200, 0.06, 'triangle', 0.03);
+      state.serveDir = +1;
+      resetBall(-1);
+      if (state.score.p >= state.score.goal) endRound(true);
+    }
+  }
+
+  function endRound(playerWon) {
+    running = false;
+    draw(); // final frame
+    ctx.save();
+    ctx.fillStyle = 'rgba(0,0,0,0.6)';
+    ctx.fillRect(0, 0, WORLD_W, WORLD_H);
+    ctx.fillStyle = '#fff';
+    ctx.textAlign = 'center';
+    ctx.font = 'bold 80px system-ui, Arial';
+    ctx.fillText(playerWon ? 'YOU WIN!' : 'YOU LOSE', WORLD_W/2, WORLD_H/2 - 20);
+    ctx.font = '24px system-ui, Arial';
+    ctx.fillStyle = '#00ff99';
+    ctx.fillText('Press Restart to play again', WORLD_W/2, WORLD_H/2 + 30);
+    ctx.restore();
+  }
+
+  // ---- Draw ----
+  function drawNet() {
+    const dash = 28, gap = 20;
+    ctx.fillStyle = '#fff';
+    const x = (WORLD_W - NET_W) / 2;
+    for (let y = 0; y < WORLD_H; y += dash + gap) {
+      ctx.fillRect(x, y, NET_W, dash);
+    }
+  }
+
+  function draw() {
+    // Clear
+    ctx.fillStyle = '#000';
+    ctx.fillRect(0, 0, WORLD_W, WORLD_H);
+
+    // Middle net
+    drawNet();
+
+    // Scores
+    ctx.textAlign = 'center';
+    ctx.fillStyle = '#fff';
+    ctx.font = 'bold 120px system-ui, Arial';
+    ctx.fillText(state.score.p, WORLD_W/2 - 120, 140);
+    ctx.fillText(state.score.a, WORLD_W/2 + 120, 140);
+
+    // Paddles
+    ctx.fillStyle = '#fff';
+    ctx.fillRect(state.player.x, state.player.y, PADDLE_W, PADDLE_H);
+    ctx.fillRect(state.ai.x, state.ai.y, PADDLE_W, PADDLE_H);
+
+    // Ball (with tiny glow)
+    ctx.shadowColor = '#00ff99';
+    ctx.shadowBlur = 8;
+    ctx.beginPath();
+    ctx.arc(state.ball.x, state.ball.y, BALL_R, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.shadowBlur = 0;
+  }
+
+  // ---- Loop ----
+  function loop(t) {
+    if (!running) return;
+    const dt = Math.min(0.033, (t - lastTime) / 1000); // clamp 30 FPS worst
+    lastTime = t;
+    update(dt);
+    draw();
+    requestAnimationFrame(loop);
+  }
+
+  // Init
+  resetMatch();
+  draw();
+})();
+</script>
+</body>
+</html>
 

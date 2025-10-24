@@ -1,1 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>BitPlay • Space Shooter</title>
+<style>
+  html,body {margin:0;height:100%;background:#000;overflow:hidden;font-family:monospace;color:#0ff;display:flex;flex-direction:column;align-items:center;justify-content:center}
+  canvas {background:#000;border:2px solid #0ff;display:block;max-width:100%;height:auto;image-rendering:pixelated}
+  #ui {position:fixed;top:10px;left:0;right:0;text-align:center;color:#0ff;font-size:18px;}
+  button {background:#0ff;color:#000;border:none;padding:8px 14px;border-radius:6px;cursor:pointer;font-weight:bold;}
+  button:hover{background:#0cc;}
+  .mobile {display:none;position:fixed;bottom:20px;width:100%;text-align:center;}
+  .btn {background:#111;border:1px solid #0ff;color:#0ff;padding:15px 25px;margin:5px;border-radius:10px;font-size:20px;}
+  .btn:active{background:#033;}
+  @media(max-width:768px){.mobile{display:block}}
+</style>
+</head>
+<body>
+<div id="ui">Score: <span id="score">0</span></div>
+<canvas id="game" width="800" height="600"></canvas>
+
+<div class="mobile">
+  <div>
+    <button class="btn" id="left">◀</button>
+    <button class="btn" id="shoot">🔥</button>
+    <button class="btn" id="right">▶</button>
+  </div>
+</div>
+
+<script>
+const canvas=document.getElementById("game"),ctx=canvas.getContext("2d");
+const scoreEl=document.getElementById("score");
+let keys={},score=0,gameOver=false;
+
+// Player
+const player={x:canvas.width/2-15,y:canvas.height-60,w:30,h:30,speed:6,color:"#0ff",cooldown:0};
+
+// Bullets
+const bullets=[];
+
+// Enemies
+const enemies=[];
+function spawnEnemy(){
+  enemies.push({x:Math.random()*(canvas.width-30),y:-30,w:30,h:30,speed:2+Math.random()*2,color:"#f00"});
+}
+
+// Controls
+document.addEventListener("keydown",e=>keys[e.key]=true);
+document.addEventListener("keyup",e=>keys[e.key]=false);
+
+function shoot(){
+  if(player.cooldown<=0){
+    bullets.push({x:player.x+player.w/2-3,y:player.y,w:6,h:15,speed:8});
+    player.cooldown=15;
+  }
+}
+
+// Mobile
+const leftBtn=document.getElementById("left");
+const rightBtn=document.getElementById("right");
+const shootBtn=document.getElementById("shoot");
+let leftHeld=false,rightHeld=false;
+leftBtn.ontouchstart=()=>leftHeld=true; leftBtn.ontouchend=()=>leftHeld=false;
+rightBtn.ontouchstart=()=>rightHeld=true; rightBtn.ontouchend=()=>rightHeld=false;
+shootBtn.ontouchstart=shoot;
+
+// Game Loop
+function update(){
+  if(gameOver) return;
+  // Move player
+  if(keys["ArrowLeft"]||keys["a"]||leftHeld) player.x-=player.speed;
+  if(keys["ArrowRight"]||keys["d"]||rightHeld) player.x+=player.speed;
+  player.x=Math.max(0,Math.min(canvas.width-player.w,player.x));
+  if((keys[" "]||keys["ArrowUp"]||keys["w"])&&player.cooldown<=0) shoot();
+
+  if(player.cooldown>0) player.cooldown--;
+
+  // Move bullets
+  for(let i=bullets.length-1;i>=0;i--){
+    const b=bullets[i];
+    b.y-=b.speed;
+    if(b.y<-b.h) bullets.splice(i,1);
+  }
+
+  // Spawn enemies
+  if(Math.random()<0.02) spawnEnemy();
+  for(let e=enemies.length-1;e>=0;e--){
+    const en=enemies[e];
+    en.y+=en.speed;
+    if(en.y>canvas.height) {enemies.splice(e,1); continue;}
+    // Collision with player
+    if(en.x<player.x+player.w&&en.x+en.w>player.x&&en.y<player.y+player.h&&en.y+en.h>player.y){
+      endGame();
+    }
+    // Collision with bullets
+    for(let b=bullets.length-1;b>=0;b--){
+      const bullet=bullets[b];
+      if(bullet.x<en.x+en.w&&bullet.x+bullet.w>en.x&&bullet.y<en.y+en.h&&bullet.y+bullet.h>en.y){
+        bullets.splice(b,1); enemies.splice(e,1);
+        score+=10; scoreEl.textContent=score;
+        break;
+      }
+    }
+  }
+}
+
+// Drawing
+function draw(){
+  ctx.fillStyle="#000";ctx.fillRect(0,0,canvas.width,canvas.height);
+  // Player
+  ctx.fillStyle=player.color;
+  ctx.fillRect(player.x,player.y,player.w,player.h);
+  // Bullets
+  ctx.fillStyle="#0f0";
+  bullets.forEach(b=>ctx.fillRect(b.x,b.y,b.w,b.h));
+  // Enemies
+  ctx.fillStyle="#f00";
+  enemies.forEach(e=>ctx.fillRect(e.x,e.y,e.w,e.h));
+}
+
+function loop(){
+  update();
+  draw();
+  if(!gameOver) requestAnimationFrame(loop);
+}
+
+function endGame(){
+  gameOver=true;
+  ctx.fillStyle="rgba(0,0,0,0.7)";
+  ctx.fillRect(0,0,canvas.width,canvas.height);
+  ctx.fillStyle="#fff";
+  ctx.font="40px monospace";
+  ctx.textAlign="center";
+  ctx.fillText("GAME OVER",canvas.width/2,canvas.height/2-20);
+  ctx.font="20px monospace";
+  ctx.fillText("Score: "+score,canvas.width/2,canvas.height/2+20);
+  ctx.fillText("Refresh or tap 🔥 to restart",canvas.width/2,canvas.height/2+60);
+  shootBtn.ontouchstart=()=>location.reload();
+}
+
+loop();
+</script>
+</body>
+</html>
 
